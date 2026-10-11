@@ -56,20 +56,46 @@ header {
 }
 
 .brand-logo {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #1DB954, #1ed760);
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 16px var(--primary-glow);
+  flex-shrink: 0;
 }
 
+/* Logo padrão (SVG) */
 .brand-logo svg {
   width: 22px;
   height: 22px;
   fill: #000;
+}
+
+/* Logo Whale: imagem PNG com fundo verde e baleia preta */
+.brand-logo.whale-logo {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.brand-logo.whale-logo img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 0 10px rgba(29, 185, 84, 0.4);
+}
+
+.brand-logo.whale-logo:hover img {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px rgba(29, 185, 84, 0.75);
 }
 
 .brand-title {
