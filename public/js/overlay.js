@@ -198,9 +198,27 @@
     }
   }
 
+  let transitionTimer = null;
+  function triggerThemeTransition() {
+    if (!card) return;
+    card.classList.remove('track-transitioning');
+    void card.offsetWidth;
+    card.classList.add('track-transitioning');
+
+    if (transitionTimer) clearTimeout(transitionTimer);
+    transitionTimer = setTimeout(() => {
+      card.classList.remove('track-transitioning');
+    }, 1100);
+  }
+
   function updateMedia(media) {
     if (!media) return;
-    const isNewTrack = !currentMedia || currentMedia.title !== media.title || currentMedia.artist !== media.artist;
+    const isNewTrack = currentMedia && (currentMedia.title !== media.title || currentMedia.artist !== media.artist);
+    
+    if (isNewTrack) {
+      triggerThemeTransition();
+    }
+    
     currentMedia = { ...media };
 
     // Atualizar Capa
