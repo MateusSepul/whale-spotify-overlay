@@ -39,6 +39,7 @@ const DEFAULT_CONFIG = {
   animationStyle: 'slide', // 'slide', 'fade', 'zoom'
   vinylSpeed: 'normal', // 'slow', 'normal', 'fast'
   vinylFullCover: true, // Capa ocupando o círculo inteiro no disco de vinil
+  enableTransitions: true, // Ativar animações temáticas de transição ao trocar de música
 
   // Conexão
   detectionMode: 'local', // 'local' (Windows SMTC), 'api' (Spotify Web API), 'demo'

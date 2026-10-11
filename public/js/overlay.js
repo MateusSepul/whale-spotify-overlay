@@ -215,7 +215,7 @@
     if (!media) return;
     const isNewTrack = currentMedia && (currentMedia.title !== media.title || currentMedia.artist !== media.artist);
     
-    if (isNewTrack) {
+    if (isNewTrack && (!currentConfig || currentConfig.enableTransitions !== false)) {
       triggerThemeTransition();
     }
     

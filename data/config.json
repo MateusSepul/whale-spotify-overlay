@@ -1,5 +1,5 @@
 {
-  "theme": "vinyl",
+  "theme": "cassette",
   "useDynamicColor": true,
   "accentColor": "#ffffff",
   "bgColor": "#ffffff",
@@ -29,5 +29,6 @@
   "spotifyClientId": "",
   "spotifyClientSecret": "",
   "spotifyRefreshToken": "",
-  "vinylFullCover": true
+  "vinylFullCover": true,
+  "enableTransitions": true
 }

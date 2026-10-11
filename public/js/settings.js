@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setCheck('cfg-show-badge', config.showPlatformBadge);
     setCheck('cfg-hide-paused', config.hideWhenPaused);
     setVal('cfg-hide-delay', config.hideDelay, 'val-hide-delay', 's');
+    setCheck('cfg-enable-transitions', config.enableTransitions !== false);
 
     // Conexão
     setVal('cfg-detection-mode', config.detectionMode);
@@ -160,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'cfg-show-badge', key: 'showPlatformBadge', type: 'check' },
     { id: 'cfg-hide-paused', key: 'hideWhenPaused', type: 'check' },
     { id: 'cfg-hide-delay', key: 'hideDelay', type: 'val', num: true, labelId: 'val-hide-delay', suffix: 's' },
+    { id: 'cfg-enable-transitions', key: 'enableTransitions', type: 'check' },
     { id: 'cfg-detection-mode', key: 'detectionMode', type: 'val' }
   ];
 
