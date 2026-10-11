@@ -41,6 +41,55 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Visualizações WMP card selection
+  const visCards = document.querySelectorAll('.vis-card-option');
+  visCards.forEach(card => {
+    card.addEventListener('click', () => {
+      visCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const bgVisualization = card.getAttribute('data-vis');
+      toggleCustomVisVideoBox(bgVisualization === 'custom_video');
+      updateConfigProperty({ bgVisualization });
+    });
+  });
+
+  function toggleCustomVisVideoBox(show) {
+    const box = document.getElementById('group-custom-vis-video');
+    if (box) box.style.display = show ? 'flex' : 'none';
+  }
+
+  // Carregar lista de arquivos de vídeo/gif de public/visualizations
+  async function loadVisFiles(currentSelected) {
+    try {
+      const res = await fetch('/api/visualizations');
+      const data = await res.json();
+      const select = document.getElementById('cfg-bg-vis-custom-file');
+      if (!select) return;
+      select.innerHTML = '';
+      if (!data.files || data.files.length === 0) {
+        select.innerHTML = '<option value="">Nenhum arquivo na pasta public/visualizations</option>';
+        return;
+      }
+      data.files.forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f;
+        opt.textContent = f;
+        if (f === currentSelected) opt.selected = true;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error('Erro ao buscar arquivos de visualização:', e);
+    }
+  }
+
+  const btnRefreshVis = document.getElementById('btn-refresh-vis-files');
+  if (btnRefreshVis) {
+    btnRefreshVis.addEventListener('click', () => {
+      const select = document.getElementById('cfg-bg-vis-custom-file');
+      loadVisFiles(select ? select.value : '');
+    });
+  }
+
   // Copiar URL do OBS
   const copyBtn = document.getElementById('btn-copy-url');
   const copyBtnSecondary = document.getElementById('btn-copy-url-secondary');
@@ -137,6 +186,22 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleSpotifyApiBox(config.detectionMode === 'api');
     setVal('cfg-spotify-client-id', config.spotifyClientId || '');
     setVal('cfg-spotify-client-secret', config.spotifyClientSecret || '');
+
+    // Visualizações WMP
+    const currentVis = config.bgVisualization || 'none';
+    visCards.forEach(c => {
+      if (c.getAttribute('data-vis') === currentVis) {
+        c.classList.add('active');
+      } else {
+        c.classList.remove('active');
+      }
+    });
+    toggleCustomVisVideoBox(currentVis === 'custom_video');
+    loadVisFiles(config.bgVisCustomFile || '');
+    setVal('cfg-bg-vis-opacity', config.bgVisOpacity !== undefined ? config.bgVisOpacity : 70, 'val-bg-vis-opacity', '%');
+    setVal('cfg-bg-vis-speed', config.bgVisSpeed || 'normal');
+    setVal('cfg-bg-vis-scope', config.bgVisScope || 'card');
+
     setTimeout(autoFitPreview, 60);
   }
 
@@ -186,7 +251,11 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'cfg-hide-paused', key: 'hideWhenPaused', type: 'check' },
     { id: 'cfg-hide-delay', key: 'hideDelay', type: 'val', num: true, labelId: 'val-hide-delay', suffix: 's' },
     { id: 'cfg-enable-transitions', key: 'enableTransitions', type: 'check' },
-    { id: 'cfg-detection-mode', key: 'detectionMode', type: 'val' }
+    { id: 'cfg-detection-mode', key: 'detectionMode', type: 'val' },
+    { id: 'cfg-bg-vis-opacity', key: 'bgVisOpacity', type: 'val', num: true, labelId: 'val-bg-vis-opacity', suffix: '%' },
+    { id: 'cfg-bg-vis-speed', key: 'bgVisSpeed', type: 'val' },
+    { id: 'cfg-bg-vis-scope', key: 'bgVisScope', type: 'val' },
+    { id: 'cfg-bg-vis-custom-file', key: 'bgVisCustomFile', type: 'val' }
   ];
 
   function updateObsDimensions(scale = 100) {

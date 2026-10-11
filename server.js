@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const http = require('http');
 const path = require('path');
 const WebSocket = require('ws');
@@ -36,6 +37,22 @@ app.get('/api/media', (req, res) => {
 app.post('/api/demo/next', (req, res) => {
   detector.nextDemoTrack();
   res.json({ success: true });
+});
+
+app.get('/api/visualizations', (req, res) => {
+  const visDir = path.join(__dirname, 'public', 'visualizations');
+  try {
+    if (!fs.existsSync(visDir)) {
+      fs.mkdirSync(visDir, { recursive: true });
+    }
+    const files = fs.readdirSync(visDir).filter(f => {
+      const ext = path.extname(f).toLowerCase();
+      return ['.mp4', '.webm', '.gif', '.mov', '.ogv', '.png', '.jpg', '.jpeg'].includes(ext);
+    });
+    res.json({ files });
+  } catch (err) {
+    res.json({ files: [] });
+  }
 });
 
 // Spotify OAuth routes

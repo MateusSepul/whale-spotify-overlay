@@ -1356,3 +1356,115 @@ input:checked + .slider-round:before {
   color: #88ff44;
   box-shadow: 0 2px 0 #050f00, 0 0 6px rgba(100,255,0,0.2);
 }
+
+/* ===================================================
+   VISUALIZAÇÕES DO WINDOWS MEDIA PLAYER TAB
+=================================================== */
+.vis-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.vis-card-option {
+  background: #0E1015;
+  border: 2px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+}
+
+.vis-card-option:hover {
+  border-color: #383E4E;
+  background: #151821;
+  transform: translateY(-2px);
+}
+
+.vis-card-option.active {
+  border-color: var(--primary);
+  background: rgba(29, 185, 84, 0.08);
+  box-shadow: 0 0 16px var(--primary-glow);
+}
+
+.vis-card-icon {
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.vis-card-option.active .vis-card-icon {
+  background: rgba(29, 185, 84, 0.18);
+}
+
+.vis-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.vis-card-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.vis-card-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.info-notice-box {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.notice-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.notice-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notice-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.notice-text {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #cbd5e1;
+}
+
+.notice-text code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #0f172a;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #38ef7d;
+  font-size: 11.5px;
+}

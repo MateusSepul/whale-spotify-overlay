@@ -1,5 +1,5 @@
 {
-  "theme": "wmp",
+  "theme": "vinyl",
   "useDynamicColor": true,
   "accentColor": "#ffffff",
   "bgColor": "#ffffff",
@@ -25,10 +25,14 @@
   "hideDelay": 5,
   "animationStyle": "slide",
   "vinylSpeed": "normal",
+  "vinylFullCover": true,
+  "enableTransitions": true,
   "detectionMode": "local",
   "spotifyClientId": "",
   "spotifyClientSecret": "",
   "spotifyRefreshToken": "",
-  "vinylFullCover": true,
-  "enableTransitions": true
+  "bgVisualization": "none",
+  "bgVisOpacity": 80,
+  "bgVisSpeed": "slow",
+  "bgVisScope": "card"
 }

@@ -41,6 +41,13 @@ const DEFAULT_CONFIG = {
   vinylFullCover: true, // Capa ocupando o círculo inteiro no disco de vinil
   enableTransitions: true, // Ativar animações temáticas de transição ao trocar de música
 
+  // Visualizações de Fundo (Windows Media Player Style)
+  bgVisualization: 'none', // 'none', 'blazing_colors', 'color_cubes', 'trilogy', 'psychedelia', 'bars_waves', 'hyperspace', 'custom_video'
+  bgVisOpacity: 70, // 0-100
+  bgVisSpeed: 'normal', // 'slow', 'normal', 'fast'
+  bgVisScope: 'card', // 'card', 'full'
+  bgVisCustomFile: '',
+
   // Conexão
   detectionMode: 'local', // 'local' (Windows SMTC), 'api' (Spotify Web API), 'demo'
   spotifyClientId: '',

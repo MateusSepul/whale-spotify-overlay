@@ -12,6 +12,12 @@
       <!-- Aura de Fundo com Cor Dinâmica -->
       <div class="card-aura" id="card-aura"></div>
 
+      <!-- Visualizador de Fundo WMP / Custom Video -->
+      <div class="card-vis-container" id="card-vis-container">
+        <canvas id="vis-canvas" class="vis-canvas"></canvas>
+        <video id="vis-video" class="vis-video" autoplay loop muted playsinline></video>
+      </div>
+
       <!-- Capa do Álbum com Equalizador Embutido -->
       <div class="cover-container" id="cover-container">
         <img id="track-cover" class="cover-img" src="" alt="Album Cover">
@@ -86,6 +92,7 @@
     </div>
   </div>
 
+  <script src="js/visualizer-engine.js"></script>
   <script src="js/overlay.js"></script>
 </body>
 </html>

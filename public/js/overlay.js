@@ -20,6 +20,13 @@
   const timeRow = document.getElementById('time-row');
   const currentTimeEl = document.getElementById('current-time');
   const totalTimeEl = document.getElementById('total-time');
+  const visContainer = document.getElementById('card-vis-container');
+  const visCanvas = document.getElementById('vis-canvas');
+  const visVideo = document.getElementById('vis-video');
+
+  if (window.WMPVisualizer && visContainer && visCanvas) {
+    window.WMPVisualizer.init(visContainer, visCanvas, visVideo);
+  }
 
   function connectWS() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -107,6 +114,17 @@
     root.style.setProperty('--text-color', config.textColor || '#FFFFFF');
     root.style.setProperty('--secondary-text-color', config.secondaryTextColor || '#A0A5B5');
 
+    // Alcance e Parâmetros do Visualizador de Fundo
+    if (config.bgVisScope === 'full') {
+      document.body.classList.add('vis-scope-full');
+    } else {
+      document.body.classList.remove('vis-scope-full');
+    }
+
+    if (window.WMPVisualizer) {
+      window.WMPVisualizer.updateConfig(config);
+    }
+
     // Marquee
     checkMarquee();
   }
@@ -117,6 +135,9 @@
     const rgb = hexToRgb(hex);
     if (rgb) {
       root.style.setProperty('--accent-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+      if (window.WMPVisualizer) {
+        window.WMPVisualizer.setAccentColor(rgb);
+      }
     }
   }
 
@@ -220,6 +241,10 @@
     }
     
     currentMedia = { ...media };
+
+    if (window.WMPVisualizer) {
+      window.WMPVisualizer.updateMedia(media);
+    }
 
     // Atualizar Capa
     if (media.coverUrl && coverImg.src !== media.coverUrl) {

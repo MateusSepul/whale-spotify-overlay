@@ -55,6 +55,12 @@
             <div id="spotify-card" class="spotify-card theme-glass cover-shape-rounded is-playing">
               <div class="card-aura" id="card-aura"></div>
               
+              <!-- Visualizador de Fundo WMP / Custom Video -->
+              <div class="card-vis-container" id="card-vis-container">
+                <canvas id="vis-canvas" class="vis-canvas"></canvas>
+                <video id="vis-video" class="vis-video" autoplay loop muted playsinline></video>
+              </div>
+              
               <div class="cover-container" id="cover-container">
                 <img id="track-cover" class="cover-img" src="" alt="Album Cover">
                 <div class="equalizer-badge eq-playing" id="equalizer-badge">
@@ -159,6 +165,7 @@
       <nav class="tabs-nav">
         <button class="tab-btn active" data-tab="tab-themes">🎨 Temas & Estilo</button>
         <button class="tab-btn" data-tab="tab-classic">🕹️ Players Clássicos</button>
+        <button class="tab-btn" data-tab="tab-visualizations">🌌 Visualizações WMP</button>
         <button class="tab-btn" data-tab="tab-colors">🌈 Cores & Efeitos</button>
         <button class="tab-btn" data-tab="tab-typography">🔤 Tipografia</button>
         <button class="tab-btn" data-tab="tab-elements">⚙️ Elementos</button>
@@ -715,9 +722,159 @@
         </div>
       </div>
 
+      <!-- ABA VISUALIZAÇÕES DO WINDOWS MEDIA PLAYER -->
+      <div class="tab-content" id="tab-visualizations">
+        <div class="config-group">
+          <div class="group-title">Visualizações Retrô do Windows Media Player</div>
+          <div class="group-desc">
+            Adicione os icônicos efeitos visuais do Windows Media Player (Blazing Colors, Color Cubes, Trilogy, Psychedelia) animados em tempo real no fundo do seu overlay!
+          </div>
+
+          <div class="vis-cards-grid">
+            <div class="vis-card-option active" data-vis="none">
+              <div class="vis-card-icon">🚫</div>
+              <div class="vis-card-info">
+                <div class="vis-card-name">Desativado</div>
+                <div class="vis-card-sub">Apenas fundo e aura padrão</div>
+              </div>
+            </div>
+
+            <div class="vis-card-option" data-vis="blazing_colors">
+              <div class="vis-card-icon">🔥</div>
+              <div class="vis-card-info">
+                <div class="vis-card-name">Blazing Colors</div>
+                <div class="vis-card-sub">Chamas & plasma fluido cósmico</div>
+              </div>
+            </div>
+
+            <div class="vis-card-option" data-vis="color_cubes">
+              <div class="vis-card-icon">🧊</div>
+              <div class="vis-card-info">
+                <div class="vis-card-name">Color Cubes 3D</div>
+                <div class="vis-card-sub">Cubos néon 3D orbitando no espaço</div>
+              </div>
+            </div>
+
+            <div class="vis-card-option" data-vis="trilogy">
+              <div class="vis-card-icon">🌀</div>
+              <div class="vis-card-info">
+                <div class="vis-card-name">Trilogy Ribbons</div>
+                <div class="vis-card-sub">Fitas neon ondulantes & poeira estelar</div>
+              </div>
+            </div>
+
+            <div class="vis-card-option" data-vis="psychedelia">
+              <div class="vis-card-icon">🔮</div>
+              <div class="vis-card-info">
+                <div class="vis-card-name">Psychedelia</div>
+                <div class="vis-card-sub">Caleidoscópio espiral hipnótico retrô</div>
+              </div>
+            </div>
+
+            <div class="vis-card-option" data-vis="bars_waves">
+              <div class="vis-card-icon">📊</div>
+              <div class="vis-card-info">
+                <div class="vis-card-name">Bars & Waves</div>
+                <div class="vis-card-sub">Equalizador de espectro & osciloscópio</div>
+              </div>
+            </div>
+
+            <div class="vis-card-option" data-vis="hyperspace">
+              <div class="vis-card-icon">🚀</div>
+              <div class="vis-card-info">
+                <div class="vis-card-name">Hyperspace</div>
+                <div class="vis-card-sub">Túnel de estrelas em velocidade de dobra</div>
+              </div>
+            </div>
+
+            <div class="vis-card-option" data-vis="custom_video">
+              <div class="vis-card-icon">🎬</div>
+              <div class="vis-card-info">
+                <div class="vis-card-name">Vídeo / GIF em Loop</div>
+                <div class="vis-card-sub">Usar arquivo de vídeo da pasta</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="config-group">
+          <div class="group-title">Ajustes da Visualização</div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Opacidade da Animação</span>
+              <span class="form-sublabel">Intensidade do efeito atrás dos textos e capa</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-bg-vis-opacity" min="10" max="100" step="5" value="70">
+              <span class="slider-val" id="val-bg-vis-opacity">70%</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Velocidade da Animação</span>
+              <span class="form-sublabel">Ritmo de oscilação do visualizador</span>
+            </div>
+            <select id="cfg-bg-vis-speed">
+              <option value="slow">Lenta (Suave / Relaxante)</option>
+              <option value="normal" selected>Normal (Padrão)</option>
+              <option value="fast">Rápida (Dinâmica)</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Alcance da Visualização</span>
+              <span class="form-sublabel">Onde a animação deve preencher</span>
+            </div>
+            <select id="cfg-bg-vis-scope">
+              <option value="card" selected>Apenas dentro do Card do Overlay</option>
+              <option value="full">Tela Inteira (Fundo expandido no OBS)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Opção de Seleção de Vídeo/GIF Personalizado -->
+        <div class="config-group" id="group-custom-vis-video" style="display: none;">
+          <div class="group-title">Vídeo / GIF Personalizado</div>
+          <div class="group-desc">
+            Você pode colocar arquivos de loop (<code>.mp4</code>, <code>.webm</code> ou <code>.gif</code>) na pasta <code style="color: #38EF7D;">public/visualizations</code> para usar como fundo!
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Arquivo de Vídeo / GIF</span>
+              <span class="form-sublabel">Selecione o arquivo detectado</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; width: 50%;">
+              <select id="cfg-bg-vis-custom-file" style="flex: 1;">
+                <option value="">Nenhum arquivo encontrado</option>
+              </select>
+              <button id="btn-refresh-vis-files" class="btn btn-secondary btn-sm" title="Recarregar pasta">🔄</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dica sobre os instaladores .EXE e .MSI antigos -->
+        <div class="info-notice-box">
+          <div class="notice-icon">💡</div>
+          <div class="notice-content">
+            <div class="notice-title">Sobre os arquivos .exe e .msi originais do WMP:</div>
+            <div class="notice-text">
+              Os arquivos <strong>.exe</strong> e <strong>.msi</strong> clássicos (como Blazing Colors, Color Cubes e Trilogy) são instaladores de plugins de 20 anos atrás feitos para o aplicativo desktop do Windows Media Player, e por segurança nenhum navegador moderno (como o OBS) consegue executar arquivos .exe diretamente.
+              <br><br>
+              Por isso, implementamos as <strong>recriações fiéis em tempo real</strong> em Canvas acima que rodam com máxima performance no OBS, <strong>além</strong> de permitir colocar vídeos gravados em loop (MP4/WebM/GIF) na pasta <code>public/visualizations</code>!
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </section>
   </main>
 
+  <script src="js/visualizer-engine.js"></script>
   <script src="js/overlay.js"></script>
   <script src="js/settings.js"></script>
 </body>

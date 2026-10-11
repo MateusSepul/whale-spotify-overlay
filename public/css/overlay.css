@@ -78,6 +78,49 @@ body {
   transition: all 0.5s ease;
 }
 
+/* Visualizador de Fundo (WMP Retro / Vídeo) */
+.card-vis-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  transition: opacity 0.4s ease;
+}
+
+.vis-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.vis-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+body.vis-scope-full .card-vis-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  border-radius: 0;
+}
+
 /* Container de Capa */
 .cover-container {
   position: relative;
