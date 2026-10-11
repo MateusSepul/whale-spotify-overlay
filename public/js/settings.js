@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Helper: converte hex em rgb e atualiza --accent-rgb no preview
+  function applyAccentRgb(hex) {
+    const clean = hex.replace('#', '');
+    if (clean.length === 6) {
+      const r = parseInt(clean.substring(0, 2), 16);
+      const g = parseInt(clean.substring(2, 4), 16);
+      const b = parseInt(clean.substring(4, 6), 16);
+      document.documentElement.style.setProperty('--accent-rgb', `${r}, ${g}, ${b}`);
+    }
+  }
+
   // Tabs Navigation
   const tabBtns = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
@@ -286,6 +297,24 @@ document.addEventListener('DOMContentLoaded', () => {
       if (binding.key === 'detectionMode') {
         toggleSpotifyApiBox(value === 'api');
       }
+
+      // Aplicar imediatamente no preview local (sem esperar pelo WebSocket)
+      const root = document.documentElement;
+      const immediateMap = {
+        fontFamily:          () => root.style.setProperty('--font-family', `'${value}', sans-serif`),
+        titleSize:           () => root.style.setProperty('--title-size', `${value}px`),
+        artistSize:          () => root.style.setProperty('--artist-size', `${value}px`),
+        accentColor:         () => { root.style.setProperty('--accent-color', value); applyAccentRgb(value); },
+        bgColor:             () => root.style.setProperty('--bg-color', value),
+        textColor:           () => root.style.setProperty('--text-color', value),
+        secondaryTextColor:  () => root.style.setProperty('--secondary-text-color', value),
+        bgOpacity:           () => root.style.setProperty('--bg-opacity', (value / 100).toString()),
+        glowIntensity:       () => root.style.setProperty('--glow-intensity', (value / 100).toString()),
+        blurAmount:          () => root.style.setProperty('--blur-amount', `${value}px`),
+        borderRadius:        () => root.style.setProperty('--border-radius', `${value}px`),
+      };
+      if (immediateMap[binding.key]) immediateMap[binding.key]();
+
       updateConfigProperty({ [binding.key]: value });
       setTimeout(autoFitPreview, 30);
     });

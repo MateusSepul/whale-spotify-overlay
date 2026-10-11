@@ -2,6 +2,7 @@
 
 :root {
   --accent-color: #1DB954;
+  --accent-rgb: 29, 185, 84;
   --bg-color: #111217;
   --bg-opacity: 0.85;
   --text-color: #FFFFFF;
@@ -213,10 +214,11 @@ body.vis-scope-full .card-vis-container {
 .track-title {
   font-size: var(--title-size);
   font-weight: var(--font-weight);
+  font-family: var(--font-family);
   color: var(--text-color);
   display: inline-block;
   letter-spacing: -0.2px;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, font-family 0.2s ease;
 }
 
 .track-title.animate-marquee {
@@ -231,12 +233,13 @@ body.vis-scope-full .card-vis-container {
 
 .track-artist {
   font-size: var(--artist-size);
+  font-family: var(--font-family);
   color: var(--secondary-text-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, font-family 0.2s ease;
 }
 
 .spotify-badge {
@@ -432,7 +435,7 @@ body.vis-scope-full .card-vis-container {
     16px 100%,
     0 calc(100% - 16px)
   );
-  z-index: 0;
+  z-index: 2;
   pointer-events: none;
   transition: background 0.4s ease;
 }
@@ -445,13 +448,13 @@ body.vis-scope-full .card-vis-container {
   background: linear-gradient(135deg, rgba(16, 17, 24, var(--bg-opacity)) 0%, rgba(9, 10, 15, var(--bg-opacity)) 100%);
   clip-path: polygon(
     0 0,
-    calc(100% - 15px) 0,
-    100% 15px,
+    calc(100% - 14px) 0,
+    100% 14px,
     100% 100%,
-    15px 100%,
-    0 calc(100% - 15px)
+    14px 100%,
+    0 calc(100% - 14px)
   );
-  z-index: 0;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -464,13 +467,22 @@ body.vis-scope-full .card-vis-container {
 .theme-cyberpunk .card-vis-container {
   clip-path: polygon(
     0 0,
-    calc(100% - 15px) 0,
-    100% 15px,
+    calc(100% - 14px) 0,
+    100% 14px,
     100% 100%,
-    15px 100%,
-    0 calc(100% - 15px)
+    14px 100%,
+    0 calc(100% - 14px)
   );
   border-radius: 0 !important;
+  z-index: 4;
+}
+
+/* Garante que todos os elementos filhos fiquem acima das pseudo-camadas */
+.theme-cyberpunk .cover-container,
+.theme-cyberpunk .info-container,
+.theme-cyberpunk .equalizer-badge {
+  position: relative;
+  z-index: 5;
 }
 
 /* Capa no Estilo Cyberpunk: angular e com borda neon */
