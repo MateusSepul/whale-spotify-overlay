@@ -406,20 +406,131 @@ body.vis-scope-full .card-vis-container {
    TEMA 3: CYBERPUNK NEON
 =================================================== */
 .theme-cyberpunk {
-  background: rgba(10, 10, 16, var(--bg-opacity));
-  border: 2px solid var(--accent-color);
-  box-shadow: 0 0 18px var(--accent-color), inset 0 0 12px rgba(var(--accent-rgb, 29, 185, 84), 0.25);
-  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  position: relative !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 16px 22px;
+  /* Glow uniforme que contorna perfeitamente a silhueta poligonal */
+  filter: drop-shadow(0 0 8px rgba(var(--accent-rgb, 255, 0, 85), calc(var(--glow-intensity) * 0.7)))
+          drop-shadow(0 0 22px rgba(var(--accent-rgb, 255, 0, 85), calc(var(--glow-intensity) * 0.35)));
+  transition: filter 0.4s ease;
 }
 
+/* Camada da Borda Neon (Chanfrada, contínua e sem quebras) */
+.theme-cyberpunk::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent-color);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% 100%,
+    16px 100%,
+    0 calc(100% - 16px)
+  );
+  z-index: 0;
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+
+/* Camada do Fundo HUD (Recuo exato de 2px para formar a borda perfeita) */
+.theme-cyberpunk::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: linear-gradient(135deg, rgba(16, 17, 24, var(--bg-opacity)) 0%, rgba(9, 10, 15, var(--bg-opacity)) 100%);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 15px) 0,
+    100% 15px,
+    100% 100%,
+    15px 100%,
+    0 calc(100% - 15px)
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Desabilitar aura difusa tradicional que vazava fora do recorte */
+.theme-cyberpunk .card-aura {
+  display: none !important;
+}
+
+/* Recorte do visualizador de fundo para não vazar fora do formato */
+.theme-cyberpunk .card-vis-container {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 15px) 0,
+    100% 15px,
+    100% 100%,
+    15px 100%,
+    0 calc(100% - 15px)
+  );
+  border-radius: 0 !important;
+}
+
+/* Capa no Estilo Cyberpunk: angular e com borda neon */
+.theme-cyberpunk .cover-img,
+.theme-cyberpunk .cover-canvas-video {
+  border-radius: 2px !important;
+  border: 1px solid rgba(var(--accent-rgb, 255, 0, 85), 0.5);
+  box-shadow: 0 0 12px rgba(var(--accent-rgb, 255, 0, 85), 0.35);
+}
+
+/* Tipografia e Detalhes Neon */
 .theme-cyberpunk .track-title {
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(var(--accent-rgb, 255, 0, 85), 0.55);
 }
 
+.theme-cyberpunk .track-artist {
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  font-size: 11.5px;
+  opacity: 0.85;
+}
+
+.theme-cyberpunk .spotify-badge {
+  color: var(--accent-color);
+  filter: drop-shadow(0 0 5px var(--accent-color));
+}
+
+/* Barra de Progresso Cyberpunk */
 .theme-cyberpunk .progress-bar-bg {
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  height: 4px;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(var(--accent-rgb, 255, 0, 85), 0.35);
+  border-radius: 0 !important;
+}
+
+.theme-cyberpunk .progress-bar-fill {
+  background: var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-color), 0 0 16px var(--accent-color);
+  border-radius: 0 !important;
+}
+
+.theme-cyberpunk .time-row span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--accent-color);
+  opacity: 0.85;
+}
+
+.theme-cyberpunk .equalizer-badge {
+  border-radius: 2px !important;
+  border: 1px solid var(--accent-color);
+  background: rgba(5, 5, 10, 0.9);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb, 255, 0, 85), 0.4);
+}
+
+.theme-cyberpunk .eq-bar {
+  border-radius: 0 !important;
 }
 
 /* ===================================================

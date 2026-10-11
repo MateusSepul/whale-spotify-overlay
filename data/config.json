@@ -1,14 +1,14 @@
 {
-  "theme": "vinyl",
+  "theme": "cyberpunk",
   "useDynamicColor": true,
   "accentColor": "#ffffff",
   "bgColor": "#ffffff",
-  "bgOpacity": 85,
+  "bgOpacity": 50,
   "textColor": "#FFFFFF",
   "secondaryTextColor": "#A0A5B5",
-  "glowIntensity": 60,
-  "blurAmount": 16,
-  "borderRadius": 18,
+  "glowIntensity": 50,
+  "blurAmount": 0,
+  "borderRadius": 15,
   "scale": 100,
   "fontFamily": "Poppins",
   "titleSize": 18,
@@ -32,7 +32,8 @@
   "spotifyClientSecret": "",
   "spotifyRefreshToken": "",
   "bgVisualization": "none",
-  "bgVisOpacity": 80,
+  "bgVisOpacity": 100,
   "bgVisSpeed": "slow",
-  "bgVisScope": "card"
+  "bgVisScope": "card",
+  "enableCanvas": true
 }
