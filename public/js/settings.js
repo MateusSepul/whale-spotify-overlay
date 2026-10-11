@@ -27,6 +27,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Classic Player card selection
+  const classicCards = document.querySelectorAll('.classic-player-card');
+  classicCards.forEach(card => {
+    card.addEventListener('click', () => {
+      classicCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      // Also deselect regular theme cards (classic themes use their own naming)
+      themeCards.forEach(c => c.classList.remove('active'));
+      const theme = card.getAttribute('data-theme');
+      updateConfigProperty({ theme });
+      setTimeout(autoFitPreview, 40);
+    });
+  });
+
   // Copiar URL do OBS
   const copyBtn = document.getElementById('btn-copy-url');
   const copyBtnSecondary = document.getElementById('btn-copy-url-secondary');
@@ -66,12 +80,22 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => console.error('Erro ao obter config:', err));
 
   function populateInputs(config) {
-    // Tema
+    // Tema (regular cards)
+    const classicThemes = ['wmp', 'winamp', 'orb', 'radio', 'lcd'];
     themeCards.forEach(c => {
-      if (c.getAttribute('data-theme') === config.theme) {
+      if (c.getAttribute('data-theme') === config.theme && !classicThemes.includes(config.theme)) {
         c.classList.add('active');
       } else {
         c.classList.remove('active');
+      }
+    });
+
+    // Classic Player cards
+    classicCards.forEach(c => {
+      if (c.getAttribute('data-theme') === config.theme) {
+        c.classList.add('selected');
+      } else {
+        c.classList.remove('selected');
       }
     });
 

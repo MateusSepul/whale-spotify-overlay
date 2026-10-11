@@ -63,7 +63,7 @@
     currentConfig = config;
 
     // Aplicar Tema
-    const themes = ['theme-glass', 'theme-vinyl', 'theme-cyberpunk', 'theme-minimal', 'theme-pill', 'theme-cassette', 'theme-card'];
+    const themes = ['theme-glass', 'theme-vinyl', 'theme-cyberpunk', 'theme-minimal', 'theme-pill', 'theme-cassette', 'theme-card', 'theme-wmp', 'theme-winamp', 'theme-orb', 'theme-radio', 'theme-lcd'];
     themes.forEach(t => card.classList.remove(t));
     card.classList.add(`theme-${config.theme || 'glass'}`);
 

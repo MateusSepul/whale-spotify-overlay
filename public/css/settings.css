@@ -659,3 +659,700 @@ input:checked + .slider-round:before {
   color: var(--text-muted);
   line-height: 1.4;
 }
+
+/* ===================================================
+   PLAYERS CLÁSSICOS - GRID & CARDS
+=================================================== */
+
+.classic-players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 18px;
+  margin-top: 4px;
+}
+
+.classic-player-card {
+  background: var(--surface);
+  border: 2px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.classic-player-card:hover {
+  border-color: var(--primary);
+  background: var(--surface-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(29, 185, 84, 0.18);
+}
+
+.classic-player-card.selected {
+  border-color: var(--primary);
+  background: rgba(29, 185, 84, 0.07);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+
+.classic-preview-stage {
+  width: 100%;
+  background: #0a0b0e;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #1e212b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 170px;
+  padding: 12px;
+}
+
+.classic-player-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+}
+
+.classic-player-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: -8px;
+}
+
+/* ===================================================
+   WMP PREVIEW (Windows Media Player Classic)
+=================================================== */
+.wmp-preview {
+  width: 100%;
+  background: linear-gradient(160deg, #1f2135 0%, #13152a 100%);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  border: 1px solid #3a4060;
+}
+
+.wmp-titlebar {
+  background: linear-gradient(90deg, #0078d7 0%, #005aaa 100%);
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.wmp-controls-mini {
+  display: flex;
+  gap: 3px;
+}
+
+.wmp-controls-mini span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.wmp-controls-mini span:nth-child(1) { background: #ffbd44; }
+.wmp-controls-mini span:nth-child(2) { background: #00ca4e; }
+.wmp-controls-mini span:nth-child(3) { background: #ff605c; }
+
+.wmp-body {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  align-items: center;
+}
+
+.wmp-cover {
+  width: 52px;
+  height: 52px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f64f59 100%);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.wmp-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.wmp-track-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wmp-artist-name {
+  font-size: 9px;
+  color: #7c9ac5;
+  margin-top: 3px;
+}
+
+.wmp-seek-bar {
+  height: 4px;
+  background: #1a2040;
+  margin: 0 10px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.wmp-seek-fill {
+  height: 100%;
+  width: 45%;
+  background: linear-gradient(90deg, #0078d7, #00b7ff);
+  border-radius: 2px;
+}
+
+.wmp-btn-row {
+  display: flex;
+  gap: 4px;
+  padding: 8px 10px;
+  justify-content: center;
+}
+
+.wmp-btn {
+  background: linear-gradient(180deg, #2a3058 0%, #1a2040 100%);
+  border: 1px solid #3a4870;
+  color: #8ab4d8;
+  font-size: 9px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: default;
+  transition: all 0.1s;
+}
+
+.wmp-btn.wmp-play {
+  background: linear-gradient(180deg, #0078d7 0%, #005aaa 100%);
+  border-color: #0098ff;
+  color: #fff;
+}
+
+/* ===================================================
+   WINAMP PREVIEW
+=================================================== */
+.winamp-preview {
+  width: 100%;
+  background: #1a1a1a;
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+  border: 2px solid #444;
+  box-shadow: 0 0 0 1px #111;
+}
+
+.winamp-titlebar {
+  background: linear-gradient(90deg, #2a2a2a 0%, #1a1a1a 100%);
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 8px;
+  font-weight: 700;
+  color: #00ffcc;
+  border-bottom: 1px solid #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.winamp-version {
+  color: #666;
+  font-size: 7px;
+  margin-left: 4px;
+}
+
+.winamp-btns {
+  display: flex;
+  gap: 5px;
+}
+
+.winamp-btns span {
+  font-size: 8px;
+  color: #aaa;
+  cursor: default;
+}
+
+.winamp-marquee {
+  background: #000;
+  color: #00ff88;
+  font-size: 8px;
+  padding: 3px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  border-bottom: 1px solid #222;
+  font-family: 'Courier New', monospace;
+}
+
+.winamp-cover-row {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+}
+
+.winamp-cover {
+  width: 46px;
+  height: 46px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #1a6b4a 0%, #0d4a32 50%, #2d9e6a 100%);
+  flex-shrink: 0;
+  border: 1px solid #00ff88;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+}
+
+.winamp-vis {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  background: #000;
+  border: 1px solid #222;
+  padding: 3px;
+}
+
+.winamp-bar {
+  flex: 1;
+  background: linear-gradient(0deg, #00ff00 0%, #ffff00 60%, #ff4400 100%);
+  min-height: 4px;
+  border-radius: 1px 1px 0 0;
+  transition: height 0.3s ease;
+}
+
+.winamp-controls {
+  display: flex;
+  gap: 2px;
+  padding: 0 8px 6px;
+  justify-content: center;
+}
+
+.wa-btn {
+  background: linear-gradient(180deg, #333 0%, #1a1a1a 100%);
+  border: 1px solid #555;
+  color: #aaa;
+  font-size: 7px;
+  padding: 3px 5px;
+  border-radius: 2px;
+  cursor: default;
+  font-family: 'Courier New', monospace;
+}
+
+.wa-btn.wa-play {
+  background: linear-gradient(180deg, #006600 0%, #003300 100%);
+  border-color: #00aa00;
+  color: #00ff88;
+}
+
+.winamp-seek {
+  height: 5px;
+  background: #000;
+  margin: 0 8px 8px;
+  border-radius: 2px;
+  border: 1px solid #333;
+  position: relative;
+}
+
+.winamp-seek-pos {
+  position: absolute;
+  left: 35%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 7px;
+  height: 9px;
+  background: #00ff88;
+  border-radius: 1px;
+}
+
+/* ===================================================
+   ORB / SCI-FI PREVIEW
+=================================================== */
+.orb-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background: radial-gradient(ellipse at center, #0d1b2a 0%, #050810 100%);
+  width: 100%;
+  border-radius: 8px;
+  position: relative;
+}
+
+.orb-glow-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -62%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 30px 8px rgba(0, 140, 255, 0.25), 0 0 60px 15px rgba(100, 60, 255, 0.12);
+  pointer-events: none;
+}
+
+.orb-outer {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 30% 30%, #c8d8ff 0%, #6090e0 25%, #1040a0 55%, #050820 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow:
+    0 0 0 3px rgba(100, 150, 255, 0.3),
+    0 0 15px rgba(50, 100, 255, 0.4),
+    inset 0 -8px 20px rgba(0,0,30,0.8);
+}
+
+.orb-cover {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #9b59b6 0%, #6a3093 50%, #e91e63 100%);
+  border: 2px solid rgba(255,255,255,0.2);
+  position: absolute;
+}
+
+.orb-chrome-ring {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, rgba(255,255,255,0.4), transparent, rgba(255,255,255,0.1)) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+}
+
+.orb-inner-ring {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(150, 180, 255, 0.3);
+}
+
+.orb-track-info {
+  text-align: center;
+}
+
+.orb-track {
+  font-size: 10px;
+  font-weight: 700;
+  color: #8ac4ff;
+  letter-spacing: 0.5px;
+}
+
+.orb-artist {
+  font-size: 9px;
+  color: #4a6898;
+  margin-top: 2px;
+}
+
+.orb-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.orb-ctrl {
+  font-size: 10px;
+  color: #4a6898;
+  cursor: default;
+  transition: color 0.2s;
+}
+
+.orb-ctrl.orb-play-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3060c0, #1a40a0);
+  border: 1px solid rgba(100, 150, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8ac4ff;
+  font-size: 9px;
+  box-shadow: 0 0 10px rgba(60, 100, 255, 0.4);
+}
+
+/* ===================================================
+   RETRO RADIO PREVIEW
+=================================================== */
+.radio-preview {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.radio-body {
+  width: 100%;
+  background: linear-gradient(160deg, #c0392b 0%, #922b21 100%);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  border: 2px solid #e74c3c;
+  box-shadow:
+    inset 0 2px 4px rgba(255,100,100,0.3),
+    0 4px 15px rgba(0,0,0,0.5),
+    0 1px 0 rgba(255,255,255,0.15);
+}
+
+.radio-speaker {
+  width: 50px;
+  height: 90px;
+  background: #8b1a10;
+  border-radius: 8px;
+  border: 1px solid #c0392b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.radio-speaker-grid {
+  width: 38px;
+  height: 78px;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.5) 3px,
+      rgba(0,0,0,0.5) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.5) 3px,
+      rgba(0,0,0,0.5) 4px
+    );
+  border-radius: 4px;
+}
+
+.radio-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.radio-lcd {
+  background: #0a1a0a;
+  border: 1px solid #1a3a1a;
+  border-radius: 6px;
+  padding: 6px 8px;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.radio-lcd-track {
+  font-size: 9px;
+  font-weight: 700;
+  color: #00ff44;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 6px #00ff44;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.radio-lcd-artist {
+  font-size: 8px;
+  color: #00aa22;
+  font-family: 'Courier New', monospace;
+  margin-top: 2px;
+  text-shadow: 0 0 4px #00aa22;
+}
+
+.radio-lcd-bar {
+  height: 3px;
+  background: #0a2a0a;
+  border-radius: 2px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.radio-lcd-fill {
+  height: 100%;
+  width: 60%;
+  background: linear-gradient(90deg, #00ff44, #00cc33);
+  border-radius: 2px;
+  box-shadow: 0 0 4px #00ff44;
+}
+
+.radio-buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.radio-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #e8b4b8, #c0392b);
+  border: 1px solid #922b21;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.radio-btn.radio-btn-play {
+  background: radial-gradient(circle at 35% 35%, #ffd700, #e6a800);
+  border-color: #c98f00;
+  box-shadow: 0 0 6px rgba(255,215,0,0.4);
+}
+
+.radio-dial {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #d4a028, #7a5c10);
+  border: 2px solid #8a6820;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+  margin-left: auto;
+  position: relative;
+}
+
+.radio-dial::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 8px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 1px;
+}
+
+/* ===================================================
+   LCD COMPACT PREVIEW
+=================================================== */
+.lcd-preview {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lcd-chassis {
+  width: 100%;
+  background: linear-gradient(160deg, #2a2a2a 0%, #141414 100%);
+  border-radius: 10px;
+  padding: 8px;
+  border: 2px solid #3a3a3a;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.1),
+    0 4px 12px rgba(0,0,0,0.5);
+}
+
+.lcd-screen {
+  background: #0e1408;
+  border-radius: 6px;
+  border: 1px solid #2a3a18;
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.lcd-cover {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 50%, #e55d87 100%);
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.lcd-details {
+  flex: 1;
+  overflow: hidden;
+}
+
+.lcd-track-name {
+  font-size: 9px;
+  font-weight: 700;
+  color: #aaff44;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 6px #88ff22;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lcd-track-artist {
+  font-size: 8px;
+  color: #66aa22;
+  font-family: 'Courier New', monospace;
+  margin-top: 2px;
+  text-shadow: 0 0 4px #44aa00;
+}
+
+.lcd-progress {
+  height: 4px;
+  background: #0a1a04;
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+  border: 1px solid #1a2a0a;
+}
+
+.lcd-progress-fill {
+  height: 100%;
+  width: 55%;
+  background: linear-gradient(90deg, #44aa00, #aaff44);
+  border-radius: 2px;
+  box-shadow: 0 0 4px #88ff22;
+}
+
+.lcd-time {
+  display: flex;
+  justify-content: space-between;
+  font-size: 7px;
+  color: #44880a;
+  font-family: 'Courier New', monospace;
+  margin-top: 3px;
+}
+
+.lcd-btn-row {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  justify-content: center;
+}
+
+.lcd-hardware-btn {
+  background: linear-gradient(180deg, #3a3a3a 0%, #222 100%);
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  color: #888;
+  font-size: 8px;
+  padding: 4px 8px;
+  cursor: default;
+  box-shadow: 0 2px 0 #111, inset 0 1px 0 rgba(255,255,255,0.1);
+  font-family: 'Courier New', monospace;
+}
+
+.lcd-hardware-btn.lcd-play-hw {
+  background: linear-gradient(180deg, #1a4a00 0%, #0a2800 100%);
+  border-color: #2a6a00;
+  color: #88ff44;
+  box-shadow: 0 2px 0 #050f00, 0 0 6px rgba(100,255,0,0.2);
+}

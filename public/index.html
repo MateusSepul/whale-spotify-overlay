@@ -158,6 +158,7 @@
       <!-- Navegação de Abas -->
       <nav class="tabs-nav">
         <button class="tab-btn active" data-tab="tab-themes">🎨 Temas & Estilo</button>
+        <button class="tab-btn" data-tab="tab-classic">🕹️ Players Clássicos</button>
         <button class="tab-btn" data-tab="tab-colors">🌈 Cores & Efeitos</button>
         <button class="tab-btn" data-tab="tab-typography">🔤 Tipografia</button>
         <button class="tab-btn" data-tab="tab-elements">⚙️ Elementos</button>
@@ -570,6 +571,146 @@
               <div class="step-title">Ajuste o Tamanho Recomendado</div>
               <div class="step-text">Defina a <strong>Largura</strong> (Width) como <strong>600</strong> e a <strong>Altura</strong> (Height) como <strong>220</strong>. Clique em OK e posicione onde quiser na tela!</div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA PLAYERS CLÁSSICOS -->
+      <div class="tab-content" id="tab-classic">
+        <div class="config-group">
+          <div class="group-title">Players Clássicos dos Anos 2000</div>
+          <div class="group-desc">Estilos inspirados nas skins lendárias do Windows Media Player e players da era XP. Selecione um para aplicar no overlay.</div>
+
+          <div class="classic-players-grid">
+
+            <!-- WMP Default -->
+            <div class="classic-player-card" data-theme="wmp">
+              <div class="classic-preview-stage">
+                <div class="wmp-preview">
+                  <div class="wmp-titlebar"><span class="wmp-title-txt">Em execução</span><div class="wmp-controls-mini"><span></span><span></span><span></span></div></div>
+                  <div class="wmp-body">
+                    <div class="wmp-cover"></div>
+                    <div class="wmp-info">
+                      <div class="wmp-track-name">Nome da Música</div>
+                      <div class="wmp-artist-name">Artista</div>
+                    </div>
+                  </div>
+                  <div class="wmp-seek-bar"><div class="wmp-seek-fill"></div></div>
+                  <div class="wmp-btn-row">
+                    <button class="wmp-btn">⏮</button>
+                    <button class="wmp-btn wmp-play">▶</button>
+                    <button class="wmp-btn">⏹</button>
+                    <button class="wmp-btn">⏭</button>
+                    <button class="wmp-btn">🔀</button>
+                  </div>
+                </div>
+              </div>
+              <div class="classic-player-label">Windows Media Player</div>
+              <div class="classic-player-sub">Clássico Windows XP</div>
+            </div>
+
+            <!-- Winamp -->
+            <div class="classic-player-card" data-theme="winamp">
+              <div class="classic-preview-stage">
+                <div class="winamp-preview">
+                  <div class="winamp-titlebar">WINAMP <span class="winamp-version">5.0</span><div class="winamp-btns"><span>_</span><span>□</span><span>×</span></div></div>
+                  <div class="winamp-marquee">▶ Nome da Música ◆ Artista ◆ Álbum ▶</div>
+                  <div class="winamp-cover-row">
+                    <div class="winamp-cover"></div>
+                    <div class="winamp-vis"><div class="winamp-bar" style="height:80%"></div><div class="winamp-bar" style="height:60%"></div><div class="winamp-bar" style="height:100%"></div><div class="winamp-bar" style="height:40%"></div><div class="winamp-bar" style="height:90%"></div><div class="winamp-bar" style="height:55%"></div></div>
+                  </div>
+                  <div class="winamp-controls">
+                    <button class="wa-btn">|◄◄</button>
+                    <button class="wa-btn wa-play">►</button>
+                    <button class="wa-btn">■</button>
+                    <button class="wa-btn">▐▐</button>
+                    <button class="wa-btn">►►|</button>
+                  </div>
+                  <div class="winamp-seek"><div class="winamp-seek-pos"></div></div>
+                </div>
+              </div>
+              <div class="classic-player-label">Winamp Classic</div>
+              <div class="classic-player-sub">Pele Clássica Escura</div>
+            </div>
+
+            <!-- Orb / Sci-Fi -->
+            <div class="classic-player-card" data-theme="orb">
+              <div class="classic-preview-stage">
+                <div class="orb-preview">
+                  <div class="orb-glow-ring"></div>
+                  <div class="orb-outer">
+                    <div class="orb-cover"></div>
+                    <div class="orb-chrome-ring"></div>
+                    <div class="orb-inner-ring"></div>
+                  </div>
+                  <div class="orb-track-info">
+                    <div class="orb-track">Música</div>
+                    <div class="orb-artist">Artista</div>
+                  </div>
+                  <div class="orb-controls">
+                    <span class="orb-ctrl">⏮</span>
+                    <span class="orb-ctrl orb-play-btn">▶</span>
+                    <span class="orb-ctrl">⏭</span>
+                  </div>
+                </div>
+              </div>
+              <div class="classic-player-label">Sci-Fi Orb</div>
+              <div class="classic-player-sub">Esfera Cromada 3D</div>
+            </div>
+
+            <!-- Retro Radio -->
+            <div class="classic-player-card" data-theme="radio">
+              <div class="classic-preview-stage">
+                <div class="radio-preview">
+                  <div class="radio-body">
+                    <div class="radio-speaker"><div class="radio-speaker-grid"></div></div>
+                    <div class="radio-right">
+                      <div class="radio-lcd">
+                        <div class="radio-lcd-track">Nome da Música</div>
+                        <div class="radio-lcd-artist">Artista</div>
+                        <div class="radio-lcd-bar"><div class="radio-lcd-fill"></div></div>
+                      </div>
+                      <div class="radio-buttons">
+                        <div class="radio-btn"></div>
+                        <div class="radio-btn radio-btn-play"></div>
+                        <div class="radio-btn"></div>
+                        <div class="radio-dial"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="classic-player-label">Rádio Retrô</div>
+              <div class="classic-player-sub">Aparelho de Rádio Vintage</div>
+            </div>
+
+            <!-- LCD Compact -->
+            <div class="classic-player-card" data-theme="lcd">
+              <div class="classic-preview-stage">
+                <div class="lcd-preview">
+                  <div class="lcd-chassis">
+                    <div class="lcd-screen">
+                      <div class="lcd-cover"></div>
+                      <div class="lcd-details">
+                        <div class="lcd-track-name">Nome da Música</div>
+                        <div class="lcd-track-artist">Artista</div>
+                        <div class="lcd-progress"><div class="lcd-progress-fill"></div></div>
+                        <div class="lcd-time"><span>1:23</span><span>3:45</span></div>
+                      </div>
+                    </div>
+                    <div class="lcd-btn-row">
+                      <div class="lcd-hardware-btn">|◄</div>
+                      <div class="lcd-hardware-btn lcd-play-hw">▶</div>
+                      <div class="lcd-hardware-btn">█</div>
+                      <div class="lcd-hardware-btn">►|</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="classic-player-label">LCD Compact</div>
+              <div class="classic-player-sub">Display Digital Portátil</div>
+            </div>
+
           </div>
         </div>
       </div>

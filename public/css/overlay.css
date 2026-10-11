@@ -909,3 +909,504 @@ body {
   0% { opacity: 0.2; transform: translateX(-10px); }
   100% { opacity: 1; transform: translateX(0); }
 }
+
+/* ===================================================
+   TEMA CLÁSSICO 1: WINDOWS MEDIA PLAYER
+=================================================== */
+.theme-wmp {
+  background: linear-gradient(160deg, #1a1e38 0%, #0f1228 100%) !important;
+  border: 1px solid #2a3562 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px #2a3562 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-areas:
+    'titlebar titlebar'
+    'cover info' !important;
+  grid-template-columns: auto 1fr !important;
+  grid-template-rows: auto 1fr !important;
+  gap: 0 !important;
+  align-items: stretch !important;
+  min-height: auto !important;
+}
+
+.theme-wmp::before {
+  content: 'Windows Media Player';
+  display: block;
+  grid-area: titlebar;
+  background: linear-gradient(90deg, #0078d7 0%, #005aaa 100%);
+  padding: 5px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.theme-wmp .card-aura { display: none; }
+.theme-wmp .cassette-screw,
+.theme-wmp .cassette-header-strip,
+.theme-wmp .cassette-window { display: none !important; }
+
+.theme-wmp .cover-container {
+  grid-area: cover;
+  width: 80px !important;
+  height: 80px !important;
+  min-width: 80px !important;
+  border-radius: 0 !important;
+  flex-shrink: 0;
+  align-self: stretch !important;
+  min-height: 80px;
+}
+
+.theme-wmp .cover-img {
+  border-radius: 4px !important;
+}
+
+.theme-wmp .info-container {
+  grid-area: info;
+  padding: 10px 14px !important;
+  flex: 1;
+  align-self: center !important;
+}
+
+.theme-wmp .track-title {
+  font-size: 13px !important;
+  color: #fff !important;
+  font-family: 'Segoe UI', sans-serif !important;
+}
+
+.theme-wmp .track-artist {
+  color: #7c9ac5 !important;
+  font-size: 11px !important;
+  font-family: 'Segoe UI', sans-serif !important;
+}
+
+.theme-wmp .progress-bar-fill {
+  background: linear-gradient(90deg, #0078d7, #00b7ff) !important;
+  box-shadow: 0 0 6px rgba(0, 120, 215, 0.5) !important;
+}
+
+.theme-wmp .progress-bar-bg {
+  background: #1a2040 !important;
+}
+
+.theme-wmp .spotify-badge { display: none !important; }
+
+/* Inner body row of wmp */
+.theme-wmp .spotify-card-inner {
+  display: flex;
+  padding: 10px 12px;
+  gap: 12px;
+  align-items: center;
+  flex: 1;
+}
+
+/* ===================================================
+   TEMA CLÁSSICO 2: WINAMP
+=================================================== */
+.theme-winamp {
+  background: #1c1c1c !important;
+  border: 2px solid #555 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 0 0 1px #111, 0 8px 24px rgba(0,0,0,0.7) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-areas:
+    'titlebar titlebar'
+    'cover info' !important;
+  grid-template-columns: auto 1fr !important;
+  grid-template-rows: auto 1fr !important;
+  gap: 0 !important;
+  align-items: stretch !important;
+}
+
+.theme-winamp::before {
+  content: 'WINAMP 5.0';
+  display: block;
+  grid-area: titlebar;
+  background: linear-gradient(90deg, #2a2a2a 0%, #1a1a1a 100%);
+  padding: 4px 8px;
+  font-size: 8px;
+  font-weight: 700;
+  color: #00ffcc;
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  border-bottom: 1px solid #333;
+}
+
+.theme-winamp .card-aura { display: none; }
+.theme-winamp .cassette-screw,
+.theme-winamp .cassette-header-strip,
+.theme-winamp .cassette-window { display: none !important; }
+
+.theme-winamp .cover-container {
+  grid-area: cover;
+  width: 72px !important;
+  height: 72px !important;
+  min-width: 72px !important;
+  min-height: 72px;
+  border-radius: 0 !important;
+  border-right: 1px solid #00ff88 !important;
+  box-shadow: none !important;
+  flex-shrink: 0;
+  align-self: stretch !important;
+}
+
+.theme-winamp .cover-img {
+  border-radius: 1px !important;
+}
+
+.theme-winamp .info-container {
+  grid-area: info;
+  padding: 10px 12px !important;
+  align-self: center !important;
+}
+
+.theme-winamp .track-title {
+  font-size: 11px !important;
+  color: #00ff88 !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 6px rgba(0, 255, 136, 0.5) !important;
+}
+
+.theme-winamp .track-artist {
+  color: #00aa55 !important;
+  font-size: 10px !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.theme-winamp .progress-bar-bg {
+  background: #000 !important;
+  border: 1px solid #222 !important;
+  height: 5px !important;
+}
+
+.theme-winamp .progress-bar-fill {
+  background: linear-gradient(90deg, #00ff00, #00ff88) !important;
+  box-shadow: 0 0 5px #00ff44 !important;
+}
+
+.theme-winamp .time-row {
+  font-family: 'Courier New', monospace !important;
+  color: #00aa55 !important;
+  font-size: 9px !important;
+}
+
+.theme-winamp .spotify-badge { display: none !important; }
+
+/* Winamp Visualizer */
+.winamp-visualizer {
+  display: none;
+}
+
+.theme-winamp .winamp-visualizer {
+  grid-area: vis;
+  display: flex !important;
+  align-items: flex-end;
+  gap: 2px;
+  background: #000;
+  border-top: 1px solid #222;
+  padding: 4px 8px;
+  height: 28px;
+}
+
+.theme-winamp {
+  grid-template-areas:
+    'titlebar titlebar'
+    'cover info'
+    'vis vis' !important;
+  grid-template-rows: auto 1fr auto !important;
+}
+
+.wvis-bar {
+  flex: 1;
+  background: linear-gradient(0deg, #00ff00 0%, #ffff00 60%, #ff4400 100%);
+  border-radius: 1px 1px 0 0;
+  min-height: 3px;
+}
+
+.wvis-bar:nth-child(1)  { animation: wvisBar 0.6s ease-in-out infinite alternate; }
+.wvis-bar:nth-child(2)  { animation: wvisBar 0.8s ease-in-out infinite alternate 0.1s; }
+.wvis-bar:nth-child(3)  { animation: wvisBar 0.5s ease-in-out infinite alternate 0.05s; }
+.wvis-bar:nth-child(4)  { animation: wvisBar 0.9s ease-in-out infinite alternate 0.2s; }
+.wvis-bar:nth-child(5)  { animation: wvisBar 0.7s ease-in-out infinite alternate 0.15s; }
+.wvis-bar:nth-child(6)  { animation: wvisBar 0.55s ease-in-out infinite alternate 0.3s; }
+.wvis-bar:nth-child(7)  { animation: wvisBar 0.75s ease-in-out infinite alternate 0.25s; }
+.wvis-bar:nth-child(8)  { animation: wvisBar 0.65s ease-in-out infinite alternate 0.08s; }
+.wvis-bar:nth-child(9)  { animation: wvisBar 0.85s ease-in-out infinite alternate 0.18s; }
+.wvis-bar:nth-child(10) { animation: wvisBar 0.6s ease-in-out infinite alternate 0.12s; }
+.wvis-bar:nth-child(11) { animation: wvisBar 0.7s ease-in-out infinite alternate 0.22s; }
+.wvis-bar:nth-child(12) { animation: wvisBar 0.5s ease-in-out infinite alternate 0.28s; }
+
+@keyframes wvisBar {
+  0%   { height: 3px; }
+  40%  { height: 12px; }
+  100% { height: 20px; }
+}
+
+.is-paused .wvis-bar {
+  animation-play-state: paused !important;
+  height: 3px !important;
+}
+
+/* ===================================================
+   TEMA CLÁSSICO 3: SCI-FI ORB
+=================================================== */
+.theme-orb {
+  background: radial-gradient(ellipse at center, #0d1b2a 0%, #050810 100%) !important;
+  border: 1px solid rgba(100, 150, 255, 0.2) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 0 30px rgba(0, 100, 255, 0.15), 0 8px 30px rgba(0,0,0,0.8) !important;
+  padding: 14px 18px !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.theme-orb .card-aura { display: none; }
+.theme-orb .cassette-screw,
+.theme-orb .cassette-header-strip,
+.theme-orb .cassette-window { display: none !important; }
+
+.theme-orb .cover-container {
+  width: 90px !important;
+  height: 90px !important;
+  min-width: 90px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(ellipse at 30% 30%, #c8d8ff 0%, #6090e0 25%, #1040a0 55%, #050820 100%) !important;
+  box-shadow:
+    0 0 0 4px rgba(100, 150, 255, 0.3),
+    0 0 20px rgba(50, 100, 255, 0.5),
+    inset 0 -10px 25px rgba(0,0,30,0.9) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0;
+  position: relative !important;
+}
+
+.theme-orb .cover-img {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  border: 2px solid rgba(255,255,255,0.25) !important;
+  position: absolute !important;
+}
+
+.theme-orb .equalizer-badge { display: none !important; }
+
+.theme-orb .info-container {
+  text-align: center;
+  gap: 4px !important;
+  align-items: center;
+}
+
+.theme-orb .header-row { justify-content: center !important; }
+
+.theme-orb .track-title {
+  font-size: 13px !important;
+  color: #8ac4ff !important;
+  letter-spacing: 1px !important;
+  text-shadow: 0 0 10px rgba(100, 180, 255, 0.5) !important;
+}
+
+.theme-orb .track-artist {
+  color: #4a6898 !important;
+  font-size: 11px !important;
+  text-align: center;
+}
+
+.theme-orb .progress-bar-bg {
+  background: rgba(50, 80, 150, 0.3) !important;
+  border-radius: 4px !important;
+}
+
+.theme-orb .progress-bar-fill {
+  background: linear-gradient(90deg, #3060c0, #80b4ff) !important;
+  box-shadow: 0 0 8px rgba(80, 140, 255, 0.6) !important;
+}
+
+.theme-orb .time-row {
+  color: #3a5880 !important;
+}
+
+.theme-orb .spotify-badge {
+  color: #5090d0 !important;
+}
+
+/* Spinning cover on the orb */
+.theme-orb.is-playing .cover-container {
+  animation: spinVinyl 8s linear infinite !important;
+}
+
+.theme-orb.is-paused .cover-container {
+  animation: spinVinyl 8s linear infinite !important;
+  animation-play-state: paused !important;
+}
+
+/* ===================================================
+   TEMA CLÁSSICO 4: RÁDIO RETRÔ
+=================================================== */
+.theme-radio {
+  background: linear-gradient(160deg, #b03020 0%, #7a1d14 100%) !important;
+  border: 2px solid #d04030 !important;
+  border-radius: 14px !important;
+  box-shadow:
+    inset 0 2px 4px rgba(255,100,100,0.25),
+    0 6px 20px rgba(0,0,0,0.6),
+    0 1px 0 rgba(255,255,255,0.1) !important;
+  padding: 12px !important;
+  gap: 10px !important;
+}
+
+.theme-radio .card-aura { display: none; }
+.theme-radio .cassette-screw,
+.theme-radio .cassette-header-strip,
+.theme-radio .cassette-window { display: none !important; }
+
+.theme-radio .cover-container {
+  width: 72px !important;
+  height: 72px !important;
+  min-width: 72px !important;
+  border-radius: 6px !important;
+  border: 2px solid rgba(255,255,255,0.15) !important;
+  background: #8b1a10 !important;
+  box-shadow:
+    inset 0 0 12px rgba(0,0,0,0.5),
+    0 2px 8px rgba(0,0,0,0.4) !important;
+  overflow: hidden !important;
+  flex-shrink: 0;
+}
+
+.theme-radio .cover-img {
+  border-radius: 4px !important;
+  opacity: 0.92 !important;
+}
+
+.theme-radio .info-container {
+  background: #0a1a0a;
+  border-radius: 8px;
+  padding: 8px 10px !important;
+  border: 1px solid #1a3a1a;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.theme-radio .track-title {
+  font-size: 12px !important;
+  color: #00ff44 !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 8px rgba(0, 255, 68, 0.6) !important;
+}
+
+.theme-radio .track-artist {
+  color: #00aa22 !important;
+  font-size: 10px !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 4px rgba(0, 170, 34, 0.5) !important;
+}
+
+.theme-radio .progress-bar-bg {
+  background: #0a2a0a !important;
+}
+
+.theme-radio .progress-bar-fill {
+  background: linear-gradient(90deg, #00ff44, #00cc33) !important;
+  box-shadow: 0 0 6px rgba(0, 255, 68, 0.5) !important;
+}
+
+.theme-radio .time-row {
+  color: #00882a !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 10px !important;
+}
+
+.theme-radio .spotify-badge {
+  color: #00aa33 !important;
+}
+
+/* ===================================================
+   TEMA CLÁSSICO 5: LCD COMPACT
+=================================================== */
+.theme-lcd {
+  background: linear-gradient(160deg, #2a2a2a 0%, #141414 100%) !important;
+  border: 2px solid #3a3a3a !important;
+  border-radius: 12px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 6px 20px rgba(0,0,0,0.6) !important;
+  padding: 10px !important;
+  gap: 10px !important;
+}
+
+.theme-lcd .card-aura { display: none; }
+.theme-lcd .cassette-screw,
+.theme-lcd .cassette-header-strip,
+.theme-lcd .cassette-window { display: none !important; }
+
+.theme-lcd .cover-container {
+  width: 68px !important;
+  height: 68px !important;
+  min-width: 68px !important;
+  border-radius: 5px !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  flex-shrink: 0;
+}
+
+.theme-lcd .cover-img {
+  border-radius: 4px !important;
+}
+
+.theme-lcd .info-container {
+  background: #0e1408;
+  border-radius: 6px;
+  padding: 8px 10px !important;
+  border: 1px solid #2a3a18;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.theme-lcd .track-title {
+  font-size: 11px !important;
+  color: #aaff44 !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 8px rgba(170, 255, 68, 0.5) !important;
+}
+
+.theme-lcd .track-artist {
+  color: #66aa22 !important;
+  font-size: 10px !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 4px rgba(100, 170, 34, 0.5) !important;
+}
+
+.theme-lcd .progress-bar-bg {
+  background: #0a1a04 !important;
+  border: 1px solid #1a2a0a !important;
+}
+
+.theme-lcd .progress-bar-fill {
+  background: linear-gradient(90deg, #44aa00, #aaff44) !important;
+  box-shadow: 0 0 6px rgba(100, 255, 0, 0.4) !important;
+}
+
+.theme-lcd .time-row {
+  color: #44880a !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 10px !important;
+}
+
+.theme-lcd .spotify-badge {
+  color: #88cc44 !important;
+}
+
+.theme-lcd .equalizer-badge {
+  background: rgba(10, 20, 4, 0.95) !important;
+  border-color: #1a2a0a !important;
+}
+
+.theme-lcd .eq-bar {
+  background-color: #aaff44 !important;
+}
