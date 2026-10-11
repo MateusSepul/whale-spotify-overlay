@@ -1,0 +1,718 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Montserrat:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+
+:root {
+  --accent-color: #1DB954;
+  --bg-color: #111217;
+  --bg-opacity: 0.85;
+  --text-color: #FFFFFF;
+  --secondary-text-color: #A0A5B5;
+  --glow-intensity: 0.5;
+  --blur-amount: 16px;
+  --border-radius: 18px;
+  --scale: 1;
+  --font-family: 'Outfit', sans-serif;
+  --title-size: 17px;
+  --artist-size: 13px;
+  --font-weight: 600;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: transparent !important;
+  color: var(--text-color);
+  font-family: var(--font-family);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 20px;
+  user-select: none;
+}
+
+#overlay-wrapper {
+  transform: scale(var(--scale));
+  transform-origin: top left;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s ease;
+}
+
+#overlay-wrapper.paused-hidden {
+  opacity: 0 !important;
+  pointer-events: none;
+  transform: scale(calc(var(--scale) * 0.95));
+}
+
+/* ===================================================
+   BASE CONTAINER DO OVERLAY
+=================================================== */
+.spotify-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: var(--border-radius);
+  max-width: 520px;
+  min-width: 360px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+/* Aura Glow de fundo */
+.card-aura {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background: radial-gradient(circle at 20% 50%, var(--accent-color) 0%, transparent 70%);
+  opacity: calc(var(--glow-intensity) * 0.4);
+  filter: blur(25px);
+  z-index: 0;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+/* Container de Capa */
+.cover-container {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  transition: all 0.3s ease;
+}
+
+.cover-shape-rounded .cover-img {
+  border-radius: 12px;
+}
+
+.cover-shape-circle .cover-img {
+  border-radius: 50%;
+}
+
+.cover-shape-square .cover-img {
+  border-radius: 0;
+}
+
+/* Mini Equalizador sobreposto ou lateral */
+.equalizer-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 4px 6px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 18px;
+  z-index: 2;
+}
+
+.eq-bar {
+  width: 3px;
+  background-color: var(--accent-color);
+  border-radius: 2px;
+  transition: height 0.2s ease;
+}
+
+.eq-playing .eq-bar:nth-child(1) { animation: bounceEq 0.9s infinite ease-in-out alternate; }
+.eq-playing .eq-bar:nth-child(2) { animation: bounceEq 1.2s infinite ease-in-out alternate 0.2s; }
+.eq-playing .eq-bar:nth-child(3) { animation: bounceEq 0.8s infinite ease-in-out alternate 0.4s; }
+.eq-paused .eq-bar { height: 4px !important; animation: none !important; opacity: 0.6; }
+
+@keyframes bounceEq {
+  0% { height: 3px; }
+  50% { height: 14px; }
+  100% { height: 6px; }
+}
+
+/* Conteúdo de Texto e Informações */
+.info-container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 1;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.marquee-box {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.track-title {
+  font-size: var(--title-size);
+  font-weight: var(--font-weight);
+  color: var(--text-color);
+  display: inline-block;
+  letter-spacing: -0.2px;
+  transition: color 0.3s ease;
+}
+
+.track-title.animate-marquee {
+  display: inline-block;
+  animation: marqueeScroll 10s linear infinite alternate;
+}
+
+@keyframes marqueeScroll {
+  0%, 15% { transform: translateX(0%); }
+  85%, 100% { transform: translateX(calc(-100% + 240px)); }
+}
+
+.track-artist {
+  font-size: var(--artist-size);
+  color: var(--secondary-text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.spotify-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--accent-color);
+  opacity: 0.9;
+}
+
+.spotify-badge svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
+
+/* Barra de Progresso */
+.progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent-color);
+  border-radius: 4px;
+  box-shadow: 0 0 10px var(--accent-color);
+  transition: width 0.3s linear;
+}
+
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--secondary-text-color);
+  font-weight: 500;
+}
+
+/* ===================================================
+   TEMA 1: GLASSMORPHISM PRO (Padrão)
+=================================================== */
+.theme-glass {
+  background: rgba(17, 18, 23, var(--bg-opacity));
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4),
+              inset 0 1px 1px rgba(255, 255, 255, 0.1),
+              0 0 20px rgba(var(--accent-rgb, 29, 185, 84), calc(var(--glow-intensity) * 0.3));
+}
+
+/* ===================================================
+   TEMA 2: VINYL SPINNING RECORD
+=================================================== */
+.theme-vinyl {
+  background: rgba(18, 18, 22, var(--bg-opacity));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55),
+              0 0 25px rgba(var(--accent-rgb, 29, 185, 84), calc(var(--glow-intensity) * 0.25));
+  overflow: hidden;
+  padding: 14px 20px;
+  gap: 18px;
+}
+
+.theme-vinyl .cover-container {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  width: 78px !important;
+  height: 78px !important;
+  min-width: 78px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, #0d0d0f 0%, #17181c 25%, #0a0a0c 40%, #1f2026 55%, #0d0d0f 70%, #25262e 85%, #08080a 100%) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+              inset 0 0 0 3px #111216,
+              inset 0 0 0 7px #1c1d24,
+              inset 0 0 0 11px #0e0f12,
+              inset 0 0 0 15px #22232b !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transform-origin: center center !important;
+}
+
+/* Capa no centro exato do disco de vinil (Modo Selo / Mini) */
+.theme-vinyl .cover-img {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  border: 2px solid #000 !important;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.8) !important;
+  z-index: 2 !important;
+  transition: width 0.3s ease, height 0.3s ease !important;
+}
+
+/* Modo Círculo Inteiro (Full Cover / Picture Disc) */
+.theme-vinyl.vinyl-full-cover .cover-img {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+  border: 2px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Furinho central autêntico do disco de vinil (spindle hole) */
+.theme-vinyl .cover-container::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: #111217;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.9), inset 0 0 2px rgba(0, 0, 0, 0.9);
+}
+
+/* Ocultar equalizer em cima do vinil para não quebrar a rotação */
+.theme-vinyl .equalizer-badge {
+  display: none !important;
+}
+
+/* Animação suave e contínua do disco */
+.theme-vinyl.is-playing .cover-container {
+  animation: spinVinyl 5s linear infinite !important;
+}
+
+.theme-vinyl.is-paused .cover-container {
+  animation: spinVinyl 5s linear infinite !important;
+  animation-play-state: paused !important;
+}
+
+@keyframes spinVinyl {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===================================================
+   TEMA 3: CYBERPUNK NEON
+=================================================== */
+.theme-cyberpunk {
+  background: rgba(10, 10, 16, var(--bg-opacity));
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 18px var(--accent-color), inset 0 0 12px rgba(var(--accent-rgb, 29, 185, 84), 0.25);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+
+.theme-cyberpunk .track-title {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.theme-cyberpunk .progress-bar-bg {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===================================================
+   TEMA 4: MINIMAL CLEAN
+=================================================== */
+.theme-minimal {
+  background: rgba(20, 20, 24, calc(var(--bg-opacity) * 0.95));
+  border: none;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  padding: 12px 18px;
+}
+
+.theme-minimal .card-aura {
+  display: none;
+}
+
+.theme-minimal .cover-container {
+  width: 54px;
+  height: 54px;
+}
+
+/* ===================================================
+   TEMA 5: FLOATING PILL (COMPACT STREAMER)
+=================================================== */
+.theme-pill {
+  border-radius: 9999px !important;
+  background: rgba(14, 15, 18, var(--bg-opacity));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 8px 22px 8px 10px;
+  gap: 12px;
+  max-width: 440px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(var(--accent-rgb, 29, 185, 84), 0.2);
+}
+
+.theme-pill .cover-container {
+  width: 48px;
+  height: 48px;
+}
+
+.theme-pill .cover-img {
+  border-radius: 50% !important;
+}
+
+.theme-pill .progress-section {
+  margin-top: 2px;
+  gap: 3px;
+}
+
+.theme-pill .time-row {
+  font-size: 10px;
+}
+
+/* Ocultar elementos exclusivos de fita cassete em outros temas */
+.cassette-screw,
+.cassette-header-strip,
+.cassette-window {
+  display: none !important;
+}
+
+/* ===================================================
+   TEMA 6: RETRO CASSETTE TAPE (VINTAGE ANALOG)
+=================================================== */
+.theme-cassette {
+  background: linear-gradient(180deg, #24252B 0%, #17181D 100%) !important;
+  border: 2px solid #3E414C !important;
+  border-radius: 14px !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75),
+              inset 0 1px 2px rgba(255, 255, 255, 0.2),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.9) !important;
+  padding: 24px 22px 18px 20px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  min-width: 420px !important;
+  max-width: 520px !important;
+}
+
+/* O corpo da fita tem o detalhe recortado inferior do leitor de cabeçote */
+.theme-cassette::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 6px;
+  background: #0E0F12;
+  border-top: 1px solid #2B2C33;
+  border-radius: 4px 4px 0 0;
+  z-index: 1;
+}
+
+/* 4 Parafusos metálicos nos cantos da carcaça */
+.theme-cassette .cassette-screw {
+  display: block !important;
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #D8DCE3 30%, #858B98 100%);
+  box-shadow: inset 0 0 1px #000, 0 1px 2px rgba(0,0,0,0.8);
+  z-index: 6;
+}
+
+.theme-cassette .cassette-screw::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 1px;
+  background: #333;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.theme-cassette .cassette-screw.top-left { top: 7px; left: 7px; }
+.theme-cassette .cassette-screw.top-right { top: 7px; right: 7px; }
+.theme-cassette .cassette-screw.bottom-left { bottom: 7px; left: 7px; }
+.theme-cassette .cassette-screw.bottom-right { bottom: 7px; right: 7px; }
+
+/* Faixa superior com Lado A e Tipo da Fita */
+.theme-cassette .cassette-header-strip {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  top: 7px;
+  left: 24px;
+  right: 24px;
+  font-family: 'Space Grotesk', monospace, sans-serif;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #E2A740;
+  border-bottom: 1px solid rgba(226, 167, 64, 0.25);
+  padding-bottom: 2px;
+  z-index: 2;
+}
+
+.theme-cassette .cassette-tag {
+  background: #E2A740;
+  color: #111;
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-weight: 900;
+  font-size: 9.5px;
+}
+
+.theme-cassette .cassette-subtag {
+  color: #8E93A3;
+  font-size: 8px;
+}
+
+.theme-cassette .cassette-brand {
+  color: #E2A740;
+}
+
+/* Capa adesiva da fita */
+.theme-cassette .cover-container {
+  margin-top: 6px;
+  width: 64px !important;
+  height: 64px !important;
+  border: 2px solid #4D505E !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.7) !important;
+}
+
+.theme-cassette .cover-img {
+  border-radius: 4px !important;
+}
+
+.theme-cassette .equalizer-badge {
+  display: none !important;
+}
+
+.theme-cassette .info-container {
+  margin-top: 6px;
+  gap: 3px;
+}
+
+.theme-cassette .track-title {
+  font-family: 'Space Grotesk', monospace, sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #FFF2D1 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+}
+
+.theme-cassette .track-artist {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 12px !important;
+  color: #B5BAC8 !important;
+}
+
+/* A Janela Mecânica Acrílica de Visor da Fita */
+.theme-cassette .cassette-window {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  background: #0B0C0E;
+  border: 1.5px solid #3B3E48;
+  border-radius: 6px;
+  padding: 3px 12px;
+  height: 34px;
+  margin: 3px 0 3px 0;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fita Magnética escura passando atrás */
+.theme-cassette .cassette-tape-gauge {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100%;
+}
+
+.theme-cassette .tape-ruler {
+  display: flex;
+  justify-content: space-between;
+  width: 55px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7px;
+  color: #727785;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.theme-cassette .magnetic-tape {
+  width: 65px;
+  height: 6px;
+  background: linear-gradient(90deg, #382014 0%, #4D2E1D 50%, #382014 100%);
+  border-radius: 2px;
+  border: 1px solid #24140D;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
+}
+
+/* Carretéis Dentados Giratórios */
+.theme-cassette .spool {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #EAE6DC;
+  border: 1.5px solid #222;
+  box-shadow: 0 0 3px rgba(0,0,0,0.8), inset 0 0 2px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform-origin: center center;
+}
+
+.theme-cassette.is-playing .spool {
+  animation: spinSpool 2.5s linear infinite !important;
+}
+
+.theme-cassette.is-paused .spool {
+  animation: spinSpool 2.5s linear infinite !important;
+  animation-play-state: paused !important;
+}
+
+@keyframes spinSpool {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.theme-cassette .spool-core {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #18191E;
+  border: 1px solid #444;
+  z-index: 2;
+}
+
+/* Dentes mecânicos da engrenagem do toca-fitas */
+.theme-cassette .spool-cog {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.theme-cassette .spool-cog::before,
+.theme-cassette .spool-cog::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 2.5px;
+  background: #18191E;
+  transform: translate(-50%, -50%);
+  border-radius: 1px;
+}
+
+.theme-cassette .spool-cog::after {
+  transform: translate(-50%, -50%) rotate(60deg);
+}
+
+/* Barra de progresso com estilo analógico de fita */
+.theme-cassette .progress-bar-bg {
+  background: #121317;
+  border: 1px solid #30333D;
+  height: 4px;
+}
+
+.theme-cassette .progress-bar-fill {
+  background: #E2A740;
+  box-shadow: 0 0 6px rgba(226, 167, 64, 0.5);
+}
+
+.theme-cassette .time-row {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 10px;
+  color: #8E93A3;
+}
+
+/* ===================================================
+   TEMA 7: SPOTIFY CARD MODERN
+=================================================== */
+.theme-card {
+  background: #121212;
+  border: 1px solid #282828;
+  border-radius: 12px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6);
+  padding: 16px 20px;
+}
+
+.theme-card .track-title {
+  color: #FFFFFF;
+}
+
+.theme-card .track-artist {
+  color: #B3B3B3;
+}

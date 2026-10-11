@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify Overlay - Painel de Controle e Customização</title>
+  <link rel="stylesheet" href="css/overlay.css">
+  <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand-section">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.498 17.306c-.215.352-.676.463-1.028.248-2.816-1.722-6.36-2.112-10.536-1.157-.402.093-.799-.161-.892-.562-.093-.402.161-.8.562-.892 4.571-1.045 8.49-.604 11.646 1.335.352.215.463.676.248 1.028zm1.468-3.264c-.27.44-.847.579-1.287.31-3.224-1.982-8.14-2.556-11.954-1.398-.498.151-1.027-.132-1.178-.63-.151-.498.132-1.028.63-1.179 4.364-1.325 9.792-.686 13.479 1.61.44.27.58.847.31 1.287zm.126-3.41c-3.865-2.295-10.244-2.507-13.931-1.388-.593.18-1.223-.156-1.402-.75-.18-.593.156-1.223.75-1.402 4.24-1.287 11.288-1.043 15.736 1.597.533.316.708 1.011.392 1.544-.316.533-1.011.716-1.545.399z"/>
+        </svg>
+      </div>
+      <div class="brand-title">
+        Spotify OBS Overlay
+        <span class="brand-badge">PRO v1.0</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <a href="/overlay" target="_blank" class="btn btn-secondary">
+        <span>Abrir Overlay no Navegador</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+      <button id="btn-copy-url" class="btn btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <span id="copy-btn-text">Copiar URL do OBS</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTAINER PRINCIPAL -->
+  <main class="main-container">
+    
+    <!-- COLUNA DA ESQUERDA: LIVE PREVIEW -->
+    <aside class="preview-column">
+      <div class="preview-card-wrapper">
+        <div class="preview-header">
+          <div class="preview-title">Pré-visualização ao Vivo</div>
+          <div class="status-indicator">
+            <span class="status-dot" id="playback-status-dot"></span>
+            <span id="playback-status-text">Detectando...</span>
+          </div>
+        </div>
+
+        <!-- Palco do Overlay com fundo de transparência -->
+        <div class="checkerboard-stage">
+          <div id="overlay-wrapper">
+            <div id="spotify-card" class="spotify-card theme-glass cover-shape-rounded is-playing">
+              <div class="card-aura" id="card-aura"></div>
+              
+              <div class="cover-container" id="cover-container">
+                <img id="track-cover" class="cover-img" src="" alt="Album Cover">
+                <div class="equalizer-badge eq-playing" id="equalizer-badge">
+                  <div class="eq-bar"></div>
+                  <div class="eq-bar"></div>
+                  <div class="eq-bar"></div>
+                </div>
+              </div>
+
+              <!-- Elementos Decorativos da Fita Cassete (visíveis apenas no theme-cassette) -->
+              <div class="cassette-screw top-left"></div>
+              <div class="cassette-screw top-right"></div>
+              <div class="cassette-screw bottom-left"></div>
+              <div class="cassette-screw bottom-right"></div>
+              <div class="cassette-header-strip">
+                <span class="cassette-tag">A</span>
+                <span class="cassette-subtag">IEC II / HIGH POSITION</span>
+                <span class="cassette-brand">STEREO</span>
+              </div>
+
+              <div class="info-container">
+                <div class="header-row">
+                  <div class="marquee-box" id="marquee-box">
+                    <span id="track-title" class="track-title">Detectando Spotify...</span>
+                  </div>
+                  <div class="spotify-badge" id="spotify-badge">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.498 17.306c-.215.352-.676.463-1.028.248-2.816-1.722-6.36-2.112-10.536-1.157-.402.093-.799-.161-.892-.562-.093-.402.161-.8.562-.892 4.571-1.045 8.49-.604 11.646 1.335.352.215.463.676.248 1.028zm1.468-3.264c-.27.44-.847.579-1.287.31-3.224-1.982-8.14-2.556-11.954-1.398-.498.151-1.027-.132-1.178-.63-.151-.498.132-1.028.63-1.179 4.364-1.325 9.792-.686 13.479 1.61.44.27.58.847.31 1.287zm.126-3.41c-3.865-2.295-10.244-2.507-13.931-1.388-.593.18-1.223-.156-1.402-.75-.18-.593.156-1.223.75-1.402 4.24-1.287 11.288-1.043 15.736 1.597.533.316.708 1.011.392 1.544-.316.533-1.011.716-1.545.399z"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="track-artist" id="track-artist">Aguardando reprodução</div>
+
+                <!-- Janela Mecânica com Carretéis Giratórios da Fita Cassete -->
+                <div class="cassette-window" id="cassette-window">
+                  <div class="spool left-spool">
+                    <div class="spool-cog"></div>
+                    <div class="spool-core"></div>
+                  </div>
+                  <div class="cassette-tape-gauge">
+                    <div class="tape-ruler"><span>100</span><span>50</span><span>0</span></div>
+                    <div class="magnetic-tape"></div>
+                  </div>
+                  <div class="spool right-spool">
+                    <div class="spool-cog"></div>
+                    <div class="spool-core"></div>
+                  </div>
+                </div>
+
+                <div class="progress-section" id="progress-section">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                  </div>
+                  <div class="time-row" id="time-row">
+                    <span id="current-time">0:00</span>
+                    <span id="total-time">0:00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tamanho Recomendado no OBS -->
+        <div class="obs-dimensions-badge">
+          <div class="dimensions-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+          </div>
+          <div class="dimensions-info">
+            <span class="dimensions-title">Tamanho Recomendado no OBS</span>
+            <div class="dimensions-values">
+              <span class="dim-tag"><strong>Largura:</strong> <code id="obs-recommended-width">600 px</code></span>
+              <span class="dim-separator">•</span>
+              <span class="dim-tag"><strong>Altura:</strong> <code id="obs-recommended-height">220 px</code></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-controls-row">
+          <button id="btn-next-demo" class="btn btn-secondary btn-sm" style="flex: 1;">
+            🎲 Próxima Faixa Teste
+          </button>
+        </div>
+
+        <!-- Box de Link do OBS -->
+        <div class="obs-link-box">
+          <span class="obs-url-text" id="obs-url-display">http://localhost:3000/overlay</span>
+          <button id="btn-copy-url-secondary" class="btn btn-primary btn-sm">Copiar</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- COLUNA DA DIREITA: ABAS DE CONFIGURAÇÃO -->
+    <section class="settings-column">
+      
+      <!-- Navegação de Abas -->
+      <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="tab-themes">🎨 Temas & Estilo</button>
+        <button class="tab-btn" data-tab="tab-colors">🌈 Cores & Efeitos</button>
+        <button class="tab-btn" data-tab="tab-typography">🔤 Tipografia</button>
+        <button class="tab-btn" data-tab="tab-elements">⚙️ Elementos</button>
+        <button class="tab-btn" data-tab="tab-connection">🔌 Conexão & OBS</button>
+      </nav>
+
+      <!-- ABA 1: TEMAS & ESTILO -->
+      <div class="tab-content active" id="tab-themes">
+        <div class="config-group">
+          <div class="group-title">Escolha o Tema Visual</div>
+          <div class="group-desc">Selecione um estilo pronto para o overlay no OBS. Atualiza em tempo real.</div>
+
+          <div class="themes-grid">
+            <div class="theme-card-option active" data-theme="glass">
+              <div class="theme-card-icon">🪟</div>
+              <div class="theme-card-name">Glassmorphism</div>
+            </div>
+            <div class="theme-card-option" data-theme="vinyl">
+              <div class="theme-card-icon">💿</div>
+              <div class="theme-card-name">Disco de Vinil</div>
+            </div>
+            <div class="theme-card-option" data-theme="cyberpunk">
+              <div class="theme-card-icon">⚡</div>
+              <div class="theme-card-name">Cyberpunk Neon</div>
+            </div>
+            <div class="theme-card-option" data-theme="minimal">
+              <div class="theme-card-icon">✨</div>
+              <div class="theme-card-name">Minimal Clean</div>
+            </div>
+            <div class="theme-card-option" data-theme="pill">
+              <div class="theme-card-icon">💊</div>
+              <div class="theme-card-name">Pílula Compacta</div>
+            </div>
+            <div class="theme-card-option" data-theme="cassette">
+              <div class="theme-card-icon">📼</div>
+              <div class="theme-card-name">Fita Cassete</div>
+            </div>
+            <div class="theme-card-option" data-theme="card">
+              <div class="theme-card-icon">🎵</div>
+              <div class="theme-card-name">Spotify Card</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="config-group">
+          <div class="group-title">Formato da Capa</div>
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Estilo dos Cantos</span>
+              <span class="form-sublabel">Como a arte do álbum é recortada</span>
+            </div>
+            <select id="cfg-cover-shape">
+              <option value="rounded">Arredondada (Padrão)</option>
+              <option value="circle">Circular</option>
+              <option value="square">Quadrada Retangular</option>
+            </select>
+          </div>
+
+          <div class="form-row" id="row-vinyl-full-cover">
+            <div class="form-col">
+              <span class="form-label">Disco de Vinil: Capa no Círculo Inteiro</span>
+              <span class="form-sublabel">Faz a arte da música ocupar 100% do disco giratório (Picture Disc)</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-vinyl-full-cover" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Arredondamento do Card (Border Radius)</span>
+              <span class="form-sublabel">Curvatura geral das bordas</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-border-radius" min="0" max="32" step="1" value="18">
+              <span class="slider-val" id="val-border-radius">18px</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Escala / Tamanho do Overlay</span>
+              <span class="form-sublabel">Aumentar ou diminuir proporcionalmente</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-scale" min="60" max="150" step="5" value="100">
+              <span class="slider-val" id="val-scale">100%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 2: CORES & EFEITOS -->
+      <div class="tab-content" id="tab-colors">
+        <div class="config-group">
+          <div class="group-title">Paleta de Cores</div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Cores Dinâmicas Automáticas</span>
+              <span class="form-sublabel">Extrair cor predominante da capa do álbum atual</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-dynamic-color" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="form-row" id="row-manual-accent">
+            <div class="form-col">
+              <span class="form-label">Cor de Destaque / Acento</span>
+              <span class="form-sublabel">Barra de progresso, glow e detalhes</span>
+            </div>
+            <div class="color-picker-wrapper">
+              <input type="color" id="cfg-accent-color" value="#1DB954">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Cor de Fundo do Card</span>
+              <span class="form-sublabel">Tonalidade base do painel</span>
+            </div>
+            <div class="color-picker-wrapper">
+              <input type="color" id="cfg-bg-color" value="#111217">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Cor do Título da Música</span>
+              <span class="form-sublabel">Texto principal</span>
+            </div>
+            <div class="color-picker-wrapper">
+              <input type="color" id="cfg-text-color" value="#FFFFFF">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Cor do Artista / Subtítulo</span>
+              <span class="form-sublabel">Texto secundário</span>
+            </div>
+            <div class="color-picker-wrapper">
+              <input type="color" id="cfg-secondary-text-color" value="#A0A5B5">
+            </div>
+          </div>
+        </div>
+
+        <div class="config-group">
+          <div class="group-title">Efeitos & Transparência</div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Opacidade do Fundo</span>
+              <span class="form-sublabel">Permite ver sua stream ou gameplay por trás</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-bg-opacity" min="0" max="100" step="5" value="85">
+              <span class="slider-val" id="val-bg-opacity">85%</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Intensidade do Brilho / Aura Glow</span>
+              <span class="form-sublabel">Efeito de luz ao redor do card</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-glow-intensity" min="0" max="100" step="5" value="60">
+              <span class="slider-val" id="val-glow-intensity">60%</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Intensidade do Desfoque (Blur)</span>
+              <span class="form-sublabel">Vidro fosco no tema Glassmorphism</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-blur-amount" min="0" max="30" step="2" value="16">
+              <span class="slider-val" id="val-blur-amount">16px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 3: TIPOGRAFIA -->
+      <div class="tab-content" id="tab-typography">
+        <div class="config-group">
+          <div class="group-title">Fontes & Textos</div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Família da Fonte</span>
+              <span class="form-sublabel">Tipografia Google Fonts estilizada</span>
+            </div>
+            <select id="cfg-font-family">
+              <option value="Outfit">Outfit (Moderna & Redonda)</option>
+              <option value="Inter">Inter (Limpa & Neutra)</option>
+              <option value="Poppins">Poppins (Geométrica)</option>
+              <option value="Montserrat">Montserrat (Impactante)</option>
+              <option value="JetBrains Mono">JetBrains Mono (Tech / Gamer)</option>
+              <option value="Space Grotesk">Space Grotesk (Futurista)</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Tamanho do Título</span>
+              <span class="form-sublabel">Tamanho em pixels</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-title-size" min="14" max="28" step="1" value="17">
+              <span class="slider-val" id="val-title-size">17px</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Tamanho do Artista</span>
+              <span class="form-sublabel">Tamanho em pixels</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-artist-size" min="11" max="20" step="1" value="13">
+              <span class="slider-val" id="val-artist-size">13px</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Efeito Texto Rolante (Marquee)</span>
+              <span class="form-sublabel">Faz o texto deslizar se o título for muito longo</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-text-marquee" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 4: ELEMENTOS & COMPORTAMENTO -->
+      <div class="tab-content" id="tab-elements">
+        <div class="config-group">
+          <div class="group-title">Visibilidade dos Componentes</div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Exibir Capa do Álbum</span>
+              <span class="form-sublabel">Imagem da capa da música</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-show-cover" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Exibir Barra de Progresso</span>
+              <span class="form-sublabel">Barra que avança com a música</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-show-progress" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Exibir Tempo (0:00 / 3:45)</span>
+              <span class="form-sublabel">Contador numérico de tempo</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-show-time" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Exibir Equalizador de Áudio Animado</span>
+              <span class="form-sublabel">Barrinhas dançantes na capa</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-show-equalizer" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Exibir Ícone do Spotify</span>
+              <span class="form-sublabel">Pequeno selo da marca</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-show-badge" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="config-group">
+          <div class="group-title">Comportamento ao Pausar</div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Ocultar Overlay quando Pausado</span>
+              <span class="form-sublabel">Desaparece suavemente da tela se você pausar a música</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-hide-paused">
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Tempo de Espera antes de Sumir</span>
+              <span class="form-sublabel">Segundos após pausar</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-hide-delay" min="1" max="30" step="1" value="5">
+              <span class="slider-val" id="val-hide-delay">5s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 5: CONEXÃO & OBS -->
+      <div class="tab-content" id="tab-connection">
+        <div class="config-group">
+          <div class="group-title">Método de Detecção do Spotify</div>
+          <div class="group-desc">Escolha como o sistema captura a música tocando no seu computador.</div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Modo Atual</span>
+            </div>
+            <select id="cfg-detection-mode">
+              <option value="local">🟢 Detecção Local Windows (Nativo, sem login, automático)</option>
+              <option value="api">☁️ Spotify Web API Oficial (Requer App no Spotify)</option>
+              <option value="demo">🧪 Modo Demonstração (Músicas simuladas para teste)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Opções da Spotify API (caso o usuário queira) -->
+        <div class="config-group" id="group-spotify-api" style="display: none;">
+          <div class="group-title">Configurar Spotify Web API Oficial</div>
+          <div class="group-desc">
+            Crie um app gratuito em <a href="https://developer.spotify.com/dashboard" target="_blank" style="color: var(--primary);">developer.spotify.com/dashboard</a> e cadastre o Redirect URI como: <code style="color: #38EF7D;">http://localhost:3000/callback</code>
+          </div>
+
+          <div class="form-col">
+            <label class="form-label">Spotify Client ID</label>
+            <input type="text" id="cfg-spotify-client-id" placeholder="Cole seu Client ID aqui">
+          </div>
+
+          <div class="form-col">
+            <label class="form-label">Spotify Client Secret</label>
+            <input type="password" id="cfg-spotify-client-secret" placeholder="Cole seu Client Secret aqui">
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button id="btn-save-credentials" class="btn btn-secondary">Salvar Credenciais</button>
+            <a href="/api/spotify/login" class="btn btn-primary">Fazer Login no Spotify</a>
+          </div>
+        </div>
+
+        <div class="config-group">
+          <div class="group-title">Como Adicionar no OBS Studio (3 Passos Rápidos)</div>
+
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-title">Adicione uma Nova Fonte no OBS</div>
+              <div class="step-text">No OBS Studio, vá na caixa de <strong>Fontes</strong>, clique no botão <strong>+</strong> e selecione <strong>Navegador</strong> (Browser Source).</div>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-title">Cole o Link do Overlay</div>
+              <div class="step-text">No campo <strong>URL</strong>, cole: <code style="color: #38EF7D;">http://localhost:3000/overlay</code></div>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-title">Ajuste o Tamanho Recomendado</div>
+              <div class="step-text">Defina a <strong>Largura</strong> (Width) como <strong>600</strong> e a <strong>Altura</strong> (Height) como <strong>220</strong>. Clique em OK e posicione onde quiser na tela!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="js/overlay.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

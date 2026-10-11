@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify OBS Overlay</title>
+  <link rel="stylesheet" href="css/overlay.css">
+</head>
+<body>
+  <div id="overlay-wrapper">
+    <div id="spotify-card" class="spotify-card theme-glass cover-shape-rounded is-playing">
+      <!-- Aura de Fundo com Cor Dinâmica -->
+      <div class="card-aura" id="card-aura"></div>
+
+      <!-- Capa do Álbum com Equalizador Embutido -->
+      <div class="cover-container" id="cover-container">
+        <img id="track-cover" class="cover-img" src="" alt="Album Cover">
+        <div class="equalizer-badge eq-playing" id="equalizer-badge">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
+      </div>
+
+      <!-- Elementos Decorativos da Fita Cassete (visíveis apenas no theme-cassette) -->
+      <div class="cassette-screw top-left"></div>
+      <div class="cassette-screw top-right"></div>
+      <div class="cassette-screw bottom-left"></div>
+      <div class="cassette-screw bottom-right"></div>
+      <div class="cassette-header-strip">
+        <span class="cassette-tag">A</span>
+        <span class="cassette-subtag">IEC II / HIGH POSITION</span>
+        <span class="cassette-brand">STEREO</span>
+      </div>
+
+      <!-- Informações da Música -->
+      <div class="info-container">
+        <div class="header-row">
+          <div class="marquee-box" id="marquee-box">
+            <span id="track-title" class="track-title">Carregando música...</span>
+          </div>
+          <div class="spotify-badge" id="spotify-badge">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.498 17.306c-.215.352-.676.463-1.028.248-2.816-1.722-6.36-2.112-10.536-1.157-.402.093-.799-.161-.892-.562-.093-.402.161-.8.562-.892 4.571-1.045 8.49-.604 11.646 1.335.352.215.463.676.248 1.028zm1.468-3.264c-.27.44-.847.579-1.287.31-3.224-1.982-8.14-2.556-11.954-1.398-.498.151-1.027-.132-1.178-.63-.151-.498.132-1.028.63-1.179 4.364-1.325 9.792-.686 13.479 1.61.44.27.58.847.31 1.287zm.126-3.41c-3.865-2.295-10.244-2.507-13.931-1.388-.593.18-1.223-.156-1.402-.75-.18-.593.156-1.223.75-1.402 4.24-1.287 11.288-1.043 15.736 1.597.533.316.708 1.011.392 1.544-.316.533-1.011.716-1.545.399z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="track-artist" id="track-artist">Spotify</div>
+
+        <!-- Janela Mecânica com Carretéis Giratórios da Fita Cassete -->
+        <div class="cassette-window" id="cassette-window">
+          <div class="spool left-spool">
+            <div class="spool-cog"></div>
+            <div class="spool-core"></div>
+          </div>
+          <div class="cassette-tape-gauge">
+            <div class="tape-ruler"><span>100</span><span>50</span><span>0</span></div>
+            <div class="magnetic-tape"></div>
+          </div>
+          <div class="spool right-spool">
+            <div class="spool-cog"></div>
+            <div class="spool-core"></div>
+          </div>
+        </div>
+
+        <!-- Seção da Barra de Progresso e Tempo -->
+        <div class="progress-section" id="progress-section">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+          </div>
+          <div class="time-row" id="time-row">
+            <span id="current-time">0:00</span>
+            <span id="total-time">0:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/overlay.js"></script>
+</body>
+</html>
