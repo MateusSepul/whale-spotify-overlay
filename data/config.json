@@ -1,5 +1,5 @@
 {
-  "theme": "minimal",
+  "theme": "lcd",
   "useDynamicColor": true,
   "accentColor": "#ffffff",
   "bgColor": "#ffffff",
@@ -27,13 +27,14 @@
   "vinylSpeed": "normal",
   "vinylFullCover": true,
   "enableTransitions": true,
+  "bgVisualization": "custom_video",
+  "bgVisOpacity": 100,
+  "bgVisSpeed": "slow",
+  "bgVisScope": "card",
+  "bgVisCustomFile": "",
   "detectionMode": "local",
   "spotifyClientId": "",
   "spotifyClientSecret": "",
   "spotifyRefreshToken": "",
-  "bgVisualization": "none",
-  "bgVisOpacity": 100,
-  "bgVisSpeed": "slow",
-  "bgVisScope": "card",
   "enableCanvas": true
 }

@@ -1494,3 +1494,179 @@ input:checked + .slider-round:before {
   color: #38ef7d;
   font-size: 11.5px;
 }
+
+/* ===================================================
+   UPLOAD DE VÍDEO / GIF
+=================================================== */
+.vis-upload-zone {
+  border: 2px dashed var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: rgba(255,255,255,0.02);
+  text-align: center;
+  margin-top: 4px;
+}
+
+.vis-upload-zone:hover,
+.vis-upload-zone.drag-over {
+  border-color: var(--primary);
+  background: rgba(29, 185, 84, 0.06);
+}
+
+.vis-upload-zone.drag-over {
+  border-style: solid;
+  animation: vis-zone-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes vis-zone-pulse {
+  from { box-shadow: 0 0 0 0 rgba(29,185,84,0.15); }
+  to   { box-shadow: 0 0 16px 4px rgba(29,185,84,0.25); }
+}
+
+.vis-upload-icon {
+  font-size: 36px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.vis-upload-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.vis-upload-subtext {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.vis-upload-formats {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Progresso */
+.vis-upload-progress-wrap {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vis-upload-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.vis-upload-progress-label span:last-child {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.vis-upload-progress-bar-bg {
+  height: 6px;
+  border-radius: 99px;
+  background: var(--surface-border);
+  overflow: hidden;
+}
+
+.vis-upload-progress-bar {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--primary), #38ef7d);
+  transition: width 0.15s ease;
+}
+
+/* Status */
+.vis-upload-status {
+  margin-top: 8px;
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.vis-upload-status.success {
+  background: rgba(29,185,84,0.12);
+  color: #38ef7d;
+  border: 1px solid rgba(29,185,84,0.3);
+}
+
+.vis-upload-status.error {
+  background: rgba(255,69,58,0.1);
+  color: #ff6b63;
+  border: 1px solid rgba(255,69,58,0.25);
+}
+
+/* Lista de arquivos */
+.vis-files-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vis-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  gap: 10px;
+}
+
+.vis-file-item-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-main);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.vis-file-item-ext {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  background: rgba(29,185,84,0.12);
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.vis-file-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 15px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.vis-file-delete-btn:hover {
+  color: var(--danger);
+  background: rgba(255,69,58,0.1);
+}
+

@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
+const multer = require('multer');
 const WebSocket = require('ws');
 
 const configStore = require('./src/config-store');
@@ -13,6 +14,31 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Multer: upload de vídeos/GIFs para public/visualizations
+const visDir = path.join(__dirname, 'public', 'visualizations');
+if (!fs.existsSync(visDir)) fs.mkdirSync(visDir, { recursive: true });
+
+const allowedExts = ['.mp4', '.webm', '.gif', '.mov', '.ogv'];
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, visDir),
+  filename: (req, file, cb) => {
+    // Sanitiza o nome e garante extensão válida
+    const ext = path.extname(file.originalname).toLowerCase();
+    const base = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_\-\.]/g, '_');
+    cb(null, `${base}${ext}`);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 200 * 1024 * 1024 }, // 200 MB
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedExts.includes(ext)) return cb(null, true);
+    cb(new Error(`Tipo de arquivo não suportado: ${ext}. Use: ${allowedExts.join(', ')}`));
+  }
+});
 
 // Rota do Overlay para o OBS
 app.get('/overlay', (req, res) => {
@@ -40,11 +66,7 @@ app.post('/api/demo/next', (req, res) => {
 });
 
 app.get('/api/visualizations', (req, res) => {
-  const visDir = path.join(__dirname, 'public', 'visualizations');
   try {
-    if (!fs.existsSync(visDir)) {
-      fs.mkdirSync(visDir, { recursive: true });
-    }
     const files = fs.readdirSync(visDir).filter(f => {
       const ext = path.extname(f).toLowerCase();
       return ['.mp4', '.webm', '.gif', '.mov', '.ogv', '.png', '.jpg', '.jpeg'].includes(ext);
@@ -52,6 +74,26 @@ app.get('/api/visualizations', (req, res) => {
     res.json({ files });
   } catch (err) {
     res.json({ files: [] });
+  }
+});
+
+app.post('/api/visualizations/upload', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Nenhum arquivo enviado.' });
+  res.json({ success: true, filename: req.file.filename });
+});
+
+app.delete('/api/visualizations/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(visDir, path.basename(filename));
+  try {
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'Arquivo não encontrado.' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

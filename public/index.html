@@ -839,21 +839,48 @@
         <div class="config-group" id="group-custom-vis-video" style="display: none;">
           <div class="group-title">Vídeo / GIF Personalizado</div>
           <div class="group-desc">
-            Você pode colocar arquivos de loop (<code>.mp4</code>, <code>.webm</code> ou <code>.gif</code>) na pasta <code style="color: #38EF7D;">public/visualizations</code> para usar como fundo!
+            Faça upload de vídeos ou GIFs em loop (<code>.mp4</code>, <code>.webm</code>, <code>.gif</code>, <code>.mov</code>) diretamente aqui. Limite: <strong>200 MB</strong>.
           </div>
 
-          <div class="form-row">
+          <!-- Zona de Upload -->
+          <div id="vis-upload-zone" class="vis-upload-zone">
+            <div class="vis-upload-icon">🎬</div>
+            <div class="vis-upload-text">Arraste e solte seu arquivo aqui</div>
+            <div class="vis-upload-subtext">ou clique para selecionar</div>
+            <div class="vis-upload-formats">MP4 · WebM · GIF · MOV · OGV</div>
+            <input type="file" id="vis-file-input" accept=".mp4,.webm,.gif,.mov,.ogv" style="display:none;">
+          </div>
+
+          <!-- Barra de Progresso -->
+          <div id="vis-upload-progress-wrap" class="vis-upload-progress-wrap" style="display:none;">
+            <div class="vis-upload-progress-label">
+              <span id="vis-upload-filename">Enviando...</span>
+              <span id="vis-upload-percent">0%</span>
+            </div>
+            <div class="vis-upload-progress-bar-bg">
+              <div id="vis-upload-progress-bar" class="vis-upload-progress-bar" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- Status/Erro -->
+          <div id="vis-upload-status" class="vis-upload-status" style="display:none;"></div>
+
+          <!-- Seleção do arquivo ativo -->
+          <div class="form-row" style="margin-top: 12px;">
             <div class="form-col">
-              <span class="form-label">Arquivo de Vídeo / GIF</span>
-              <span class="form-sublabel">Selecione o arquivo detectado</span>
+              <span class="form-label">Arquivo Ativo</span>
+              <span class="form-sublabel">Selecione qual arquivo usar como fundo</span>
             </div>
             <div style="display: flex; gap: 10px; align-items: center; width: 50%;">
               <select id="cfg-bg-vis-custom-file" style="flex: 1;">
                 <option value="">Nenhum arquivo encontrado</option>
               </select>
-              <button id="btn-refresh-vis-files" class="btn btn-secondary btn-sm" title="Recarregar pasta">🔄</button>
+              <button id="btn-refresh-vis-files" class="btn btn-secondary btn-sm" title="Recarregar lista">🔄</button>
             </div>
           </div>
+
+          <!-- Lista de arquivos com delete -->
+          <div id="vis-files-list" class="vis-files-list"></div>
         </div>
 
         <!-- Dica sobre os instaladores .EXE e .MSI antigos -->

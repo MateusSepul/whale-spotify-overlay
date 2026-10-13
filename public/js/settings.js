@@ -69,25 +69,157 @@ document.addEventListener('DOMContentLoaded', () => {
     if (box) box.style.display = show ? 'flex' : 'none';
   }
 
+  // ─── Upload de Vídeo / GIF ───────────────────────────────────────────────
+
+  const uploadZone    = document.getElementById('vis-upload-zone');
+  const fileInput     = document.getElementById('vis-file-input');
+  const progressWrap  = document.getElementById('vis-upload-progress-wrap');
+  const progressBar   = document.getElementById('vis-upload-progress-bar');
+  const progressLabel = document.getElementById('vis-upload-filename');
+  const progressPct   = document.getElementById('vis-upload-percent');
+  const uploadStatus  = document.getElementById('vis-upload-status');
+
+  function showUploadStatus(msg, type = 'success') {
+    if (!uploadStatus) return;
+    uploadStatus.textContent = msg;
+    uploadStatus.className = `vis-upload-status ${type}`;
+    uploadStatus.style.display = 'block';
+    setTimeout(() => { uploadStatus.style.display = 'none'; }, 5000);
+  }
+
+  function doUpload(file) {
+    if (!file) return;
+    if (!progressWrap) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    progressWrap.style.display = 'flex';
+    if (progressLabel) progressLabel.textContent = file.name;
+    if (progressBar)   progressBar.style.width = '0%';
+    if (progressPct)   progressPct.textContent = '0%';
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/visualizations/upload');
+
+    xhr.upload.addEventListener('progress', e => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 100);
+        if (progressBar) progressBar.style.width = `${pct}%`;
+        if (progressPct) progressPct.textContent = `${pct}%`;
+      }
+    });
+
+    xhr.addEventListener('load', () => {
+      progressWrap.style.display = 'none';
+      try {
+        const result = JSON.parse(xhr.responseText);
+        if (xhr.status === 200 && result.success) {
+          showUploadStatus(`✅ "${result.filename}" enviado com sucesso!`, 'success');
+          loadVisFiles(result.filename); // auto-seleciona o arquivo enviado
+        } else {
+          showUploadStatus(`❌ Erro: ${result.error || 'Falha no upload.'}`, 'error');
+        }
+      } catch {
+        showUploadStatus('❌ Resposta inválida do servidor.', 'error');
+      }
+    });
+
+    xhr.addEventListener('error', () => {
+      progressWrap.style.display = 'none';
+      showUploadStatus('❌ Falha na conexão com o servidor.', 'error');
+    });
+
+    xhr.send(formData);
+  }
+
+  if (uploadZone) {
+    // Clique para abrir seletor de arquivo
+    uploadZone.addEventListener('click', () => fileInput && fileInput.click());
+
+    // Drag & Drop
+    uploadZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      uploadZone.classList.add('drag-over');
+    });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) doUpload(file);
+    });
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (file) { doUpload(file); fileInput.value = ''; }
+    });
+  }
+
   // Carregar lista de arquivos de vídeo/gif de public/visualizations
   async function loadVisFiles(currentSelected) {
     try {
       const res = await fetch('/api/visualizations');
       const data = await res.json();
       const select = document.getElementById('cfg-bg-vis-custom-file');
-      if (!select) return;
-      select.innerHTML = '';
-      if (!data.files || data.files.length === 0) {
-        select.innerHTML = '<option value="">Nenhum arquivo na pasta public/visualizations</option>';
-        return;
+      const filesList = document.getElementById('vis-files-list');
+
+      // Atualizar select
+      if (select) {
+        select.innerHTML = '';
+        if (!data.files || data.files.length === 0) {
+          select.innerHTML = '<option value="">Nenhum arquivo encontrado</option>';
+        } else {
+          data.files.forEach(f => {
+            const opt = document.createElement('option');
+            opt.value = f;
+            opt.textContent = f;
+            if (f === currentSelected) opt.selected = true;
+            select.appendChild(opt);
+          });
+          // Se acabou de fazer upload, seleciona e salva
+          if (currentSelected && data.files.includes(currentSelected)) {
+            select.value = currentSelected;
+            updateConfigProperty({ bgVisCustomFile: currentSelected });
+          }
+        }
       }
-      data.files.forEach(f => {
-        const opt = document.createElement('option');
-        opt.value = f;
-        opt.textContent = f;
-        if (f === currentSelected) opt.selected = true;
-        select.appendChild(opt);
-      });
+
+      // Renderizar lista de arquivos com botão delete
+      if (filesList) {
+        filesList.innerHTML = '';
+        if (data.files && data.files.length > 0) {
+          data.files.forEach(f => {
+            const ext = f.split('.').pop().toUpperCase();
+            const item = document.createElement('div');
+            item.className = 'vis-file-item';
+            item.innerHTML = `
+              <span class="vis-file-item-ext">${ext}</span>
+              <span class="vis-file-item-name" title="${f}">${f}</span>
+              <button class="vis-file-delete-btn" title="Apagar arquivo" data-filename="${f}">🗑️</button>
+            `;
+            filesList.appendChild(item);
+          });
+
+          filesList.querySelectorAll('.vis-file-delete-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const filename = btn.getAttribute('data-filename');
+              if (!confirm(`Apagar "${filename}"?`)) return;
+              const r = await fetch(`/api/visualizations/${encodeURIComponent(filename)}`, { method: 'DELETE' });
+              const result = await r.json();
+              if (result.success) {
+                showUploadStatus(`🗑️ "${filename}" apagado.`, 'success');
+                const currentVal = select ? select.value : '';
+                loadVisFiles(currentVal === filename ? '' : currentVal);
+              } else {
+                showUploadStatus(`❌ Erro ao apagar: ${result.error}`, 'error');
+              }
+            });
+          });
+        }
+      }
     } catch (e) {
       console.error('Erro ao buscar arquivos de visualização:', e);
     }
@@ -100,6 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
       loadVisFiles(select ? select.value : '');
     });
   }
+
+
 
   // Copiar URL do OBS
   const copyBtn = document.getElementById('btn-copy-url');
