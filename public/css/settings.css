@@ -374,7 +374,9 @@ header {
   padding: 24px 36px;
   overflow-y: auto;
   max-width: 900px;
+  height: calc(100vh - 65px);
 }
+
 
 /* Tabs */
 .tabs-nav {
