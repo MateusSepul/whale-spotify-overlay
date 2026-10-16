@@ -41,6 +41,19 @@ const DEFAULT_CONFIG = {
   vinylFullCover: true, // Capa ocupando o círculo inteiro no disco de vinil
   enableTransitions: true, // Ativar animações temáticas de transição ao trocar de música
 
+  // Personalização e Animações da Barra de Tempo
+  progressAnimStyle: 'shimmer', // 'none', 'shimmer', 'pulse', 'wave', 'stripes', 'rainbow', 'laser', 'audio_bounce'
+  progressHeadEffect: 'glow_orb', // 'none', 'glow_orb', 'pill', 'diamond', 'sparkle', 'pulse_ring'
+  progressAnimSpeed: 2.0, // segundos de ciclo (0.5s a 5.0s)
+  progressBarHeight: 5, // px (2 a 16)
+  progressBarRadius: 6, // px (0 a 16)
+  progressGlow: 65, // % (0 a 100)
+  progressTrackStyle: 'glass', // 'glass', 'dark', 'glow_track', 'dotted'
+  progressTimeStyle: 'glow', // 'glow', 'badge', 'clean'
+  progressFillColorType: 'accent', // 'accent', 'gradient', 'custom', 'rainbow'
+  progressCustomColor: '#1DB954',
+  progressCustomGradientEnd: '#00d2ff',
+
   // Visualizações de Fundo (Windows Media Player Style)
   bgVisualization: 'none', // 'none', 'blazing_colors', 'color_cubes', 'trilogy', 'psychedelia', 'bars_waves', 'hyperspace', 'custom_video'
   bgVisOpacity: 70, // 0-100

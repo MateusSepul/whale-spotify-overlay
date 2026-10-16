@@ -112,8 +112,11 @@
                 </div>
 
                 <div class="progress-section" id="progress-section">
-                  <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                  <div class="progress-bar-bg" id="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-bar-fill">
+                      <div class="progress-bar-fx" id="progress-bar-fx"></div>
+                      <div class="progress-bar-head" id="progress-bar-head"></div>
+                    </div>
                   </div>
                   <div class="time-row" id="time-row">
                     <span id="current-time">0:00</span>
@@ -167,6 +170,7 @@
         <button class="tab-btn" data-tab="tab-classic">🕹️ Players Clássicos</button>
         <button class="tab-btn" data-tab="tab-visualizations">🌌 Visualizações WMP</button>
         <button class="tab-btn" data-tab="tab-colors">🌈 Cores & Efeitos</button>
+        <button class="tab-btn" data-tab="tab-progressbar">⏱️ Barra de Tempo</button>
         <button class="tab-btn" data-tab="tab-typography">🔤 Tipografia</button>
         <button class="tab-btn" data-tab="tab-elements">⚙️ Elementos</button>
         <button class="tab-btn" data-tab="tab-connection">🔌 Conexão & OBS</button>
@@ -352,6 +356,293 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ABA: BARRA DE TEMPO & ANIMAÇÕES -->
+      <div class="tab-content" id="tab-progressbar">
+        
+        <!-- Presets Rápidos -->
+        <div class="config-group">
+          <div class="group-title">⚡ Estilos Prontos em 1 Clique</div>
+          <div class="group-desc">Selecione uma combinação rápida de animação, marcador e visual para a barra de tempo.</div>
+          <div class="pbar-presets-row">
+            <button class="preset-pill-btn" data-preset="cyberpunk">⚡ Cyberpunk Neon</button>
+            <button class="preset-pill-btn" data-preset="liquid">🌊 Onda Fluida</button>
+            <button class="preset-pill-btn" data-preset="shimmer">✨ Shimmer Pro</button>
+            <button class="preset-pill-btn" data-preset="rainbow">🌈 RGB Gamer</button>
+            <button class="preset-pill-btn" data-preset="stripes">💈 Retro Stripes</button>
+            <button class="preset-pill-btn" data-preset="beat">💓 Beat Pulse</button>
+            <button class="preset-pill-btn" data-preset="minimal">💎 Minimal Clean</button>
+          </div>
+        </div>
+
+        <!-- Seleção de Animação do Preenchimento -->
+        <div class="config-group">
+          <div class="group-title">✨ Estilo de Animação da Barra</div>
+          <div class="group-desc">Efeito visual contínuo aplicado ao progresso enquanto a música toca.</div>
+
+          <div class="pbar-anim-grid">
+            <div class="pbar-anim-card active" data-anim="shimmer">
+              <div class="pbar-anim-card-header">
+                <span class="pbar-anim-icon">✨</span>
+                <span class="pbar-anim-name">Shimmer (Brilho Deslizante)</span>
+              </div>
+              <div class="pbar-anim-card-desc">Feixe de luz suave que desliza periodicamente pela barra preenchida.</div>
+              <div class="pbar-mini-preview preview-shimmer"><div class="pbar-mini-fill"></div></div>
+            </div>
+
+            <div class="pbar-anim-card" data-anim="pulse">
+              <div class="pbar-anim-card-header">
+                <span class="pbar-anim-icon">💡</span>
+                <span class="pbar-anim-name">Pulso Neon (Respiração)</span>
+              </div>
+              <div class="pbar-anim-card-desc">Luz pulsante suave que respira na frequência rítmica da faixa.</div>
+              <div class="pbar-mini-preview preview-pulse"><div class="pbar-mini-fill"></div></div>
+            </div>
+
+            <div class="pbar-anim-card" data-anim="wave">
+              <div class="pbar-anim-card-header">
+                <span class="pbar-anim-icon">🌊</span>
+                <span class="pbar-anim-name">Onda Líquida (Liquid Wave)</span>
+              </div>
+              <div class="pbar-anim-card-desc">Fluxo gradiente orgânico simulando fluido luminoso em movimento.</div>
+              <div class="pbar-mini-preview preview-wave"><div class="pbar-mini-fill"></div></div>
+            </div>
+
+            <div class="pbar-anim-card" data-anim="stripes">
+              <div class="pbar-anim-card-header">
+                <span class="pbar-anim-icon">💈</span>
+                <span class="pbar-anim-name">Listras Retrô (Stripes)</span>
+              </div>
+              <div class="pbar-anim-card-desc">Padrão diagonal contínuo em movimento estilo download sci-fi.</div>
+              <div class="pbar-mini-preview preview-stripes"><div class="pbar-mini-fill"></div></div>
+            </div>
+
+            <div class="pbar-anim-card" data-anim="rainbow">
+              <div class="pbar-anim-card-header">
+                <span class="pbar-anim-icon">🌈</span>
+                <span class="pbar-anim-name">RGB Chroma Rainbow</span>
+              </div>
+              <div class="pbar-anim-card-desc">Gradiente multicolorido animado estilo setup gamer RGB.</div>
+              <div class="pbar-mini-preview preview-rainbow"><div class="pbar-mini-fill"></div></div>
+            </div>
+
+            <div class="pbar-anim-card" data-anim="laser">
+              <div class="pbar-anim-card-header">
+                <span class="pbar-anim-icon">⚡</span>
+                <span class="pbar-anim-name">Feixe Laser (Laser Sweep)</span>
+              </div>
+              <div class="pbar-anim-card-desc">Raio de alta intensidade com cauda de luz veloz e futurista.</div>
+              <div class="pbar-mini-preview preview-laser"><div class="pbar-mini-fill"></div></div>
+            </div>
+
+            <div class="pbar-anim-card" data-anim="audio_bounce">
+              <div class="pbar-anim-card-header">
+                <span class="pbar-anim-icon">💓</span>
+                <span class="pbar-anim-name">Beat Pulse (Batimento)</span>
+              </div>
+              <div class="pbar-anim-card-desc">Batimento cardíaco sonoro que expande a espessura ritmicamente.</div>
+              <div class="pbar-mini-preview preview-audio"><div class="pbar-mini-fill"></div></div>
+            </div>
+
+            <div class="pbar-anim-card" data-anim="glow_head">
+              <div class="pbar-anim-card-header">
+                <span class="pbar-anim-icon">🌠</span>
+                <span class="pbar-anim-name">Cometa Luminoso</span>
+              </div>
+              <div class="pbar-anim-card-desc">Rastro de luminosidade crescente que culmina no ponto atual.</div>
+              <div class="pbar-mini-preview preview-glowhead"><div class="pbar-mini-fill"></div></div>
+            </div>
+
+            <div class="pbar-anim-card" data-anim="none">
+              <div class="pbar-anim-card-header">
+                <span class="pbar-anim-icon">⏸️</span>
+                <span class="pbar-anim-name">Estático (Padrão Clássico)</span>
+              </div>
+              <div class="pbar-anim-card-desc">Barra de progresso sem efeitos contínuos adicionais.</div>
+              <div class="pbar-mini-preview preview-static"><div class="pbar-mini-fill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Marcador / Cabeça da Barra -->
+        <div class="config-group">
+          <div class="group-title">📍 Marcador da Ponta (Head Effect)</div>
+          <div class="group-desc">Elemento decorativo brilhante que acompanha o progresso atual da música.</div>
+
+          <div class="pbar-heads-grid">
+            <div class="pbar-head-card active" data-head="glow_orb">
+              <div class="pbar-head-icon">⚪</div>
+              <div class="pbar-head-name">Orbe Neon</div>
+              <div class="pbar-head-sub">Círculo pulsante com aura</div>
+            </div>
+
+            <div class="pbar-head-card" data-head="pill">
+              <div class="pbar-head-icon">💊</div>
+              <div class="pbar-head-name">Cápsula Vertical</div>
+              <div class="pbar-head-sub">Pílula fina luminosa</div>
+            </div>
+
+            <div class="pbar-head-card" data-head="diamond">
+              <div class="pbar-head-icon">💎</div>
+              <div class="pbar-head-name">Diamante</div>
+              <div class="pbar-head-sub">Losango rotativo</div>
+            </div>
+
+            <div class="pbar-head-card" data-head="sparkle">
+              <div class="pbar-head-icon">✨</div>
+              <div class="pbar-head-name">Estrela</div>
+              <div class="pbar-head-sub">Brilho cintilante</div>
+            </div>
+
+            <div class="pbar-head-card" data-head="pulse_ring">
+              <div class="pbar-head-icon">🔘</div>
+              <div class="pbar-head-name">Anel Expansivo</div>
+              <div class="pbar-head-sub">Onda radar pulsante</div>
+            </div>
+
+            <div class="pbar-head-card" data-head="none">
+              <div class="pbar-head-icon">🚫</div>
+              <div class="pbar-head-name">Sem Marcador</div>
+              <div class="pbar-head-sub">Borda lisa contínua</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dimensões & Ajustes Finos -->
+        <div class="config-group">
+          <div class="group-title">📐 Dimensões & Ajustes da Animação</div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Espessura / Altura da Barra</span>
+              <span class="form-sublabel">De uma linha minimalista fina a uma barra espessa estilizada</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-pbar-height" min="2" max="14" step="1" value="5">
+              <span class="slider-val" id="val-pbar-height">5px</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Arredondamento das Bordas (Radius)</span>
+              <span class="form-sublabel">Bordas retas pontudas ou estilo pílula arredondada</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-pbar-radius" min="0" max="14" step="1" value="6">
+              <span class="slider-val" id="val-pbar-radius">6px</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Intensidade do Brilho / Glow</span>
+              <span class="form-sublabel">Aura de luz e reflexo neon ao redor da barra</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-pbar-glow" min="0" max="100" step="5" value="65">
+              <span class="slider-val" id="val-pbar-glow">65%</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Velocidade da Animação</span>
+              <span class="form-sublabel">Duração do ciclo (quanto menor, mais rápido o movimento)</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="cfg-pbar-speed" min="0.5" max="5.0" step="0.1" value="2.0">
+              <span class="slider-val" id="val-pbar-speed">2.0s</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trilho / Fundo & Contadores de Tempo -->
+        <div class="config-group">
+          <div class="group-title">🎛️ Trilho de Fundo & Marcadores de Tempo</div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Estilo do Trilho de Fundo</span>
+              <span class="form-sublabel">Aparência do canal onde a barra desliza</span>
+            </div>
+            <select id="cfg-pbar-track-style">
+              <option value="glass">Vidro Translúcido Suave (Padrão)</option>
+              <option value="dark">Escuro de Alto Contraste</option>
+              <option value="glow_track">Trilho Neon com Borda Brilhante</option>
+              <option value="dotted">Pontilhado Rítmico Retro</option>
+              <option value="inset">Baixo-Relevo Profundo (Inset 3D)</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Estilo dos Números de Tempo (0:00)</span>
+              <span class="form-sublabel">Formatação do tempo atual e duração total</span>
+            </div>
+            <select id="cfg-pbar-time-style">
+              <option value="glow">Brilho Neon Pulsante no Tempo Atual</option>
+              <option value="badge">Badges em Cápsulas Translúcidas</option>
+              <option value="clean">Discreto e Limpo</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Coloração do Preenchimento</span>
+              <span class="form-sublabel">Como a barra obtém sua cor</span>
+            </div>
+            <select id="cfg-pbar-fill-color-type">
+              <option value="accent">Cor Dinâmica / Acento do Tema (Automático)</option>
+              <option value="custom">Cor Personalizada Fixa</option>
+              <option value="gradient">Gradiente Bicolor</option>
+            </select>
+          </div>
+
+          <div class="form-row" id="row-pbar-custom-color" style="display: none;">
+            <div class="form-col">
+              <span class="form-label">Cor Personalizada</span>
+              <span class="form-sublabel">Tom específico para o preenchimento</span>
+            </div>
+            <div class="color-picker-wrapper">
+              <input type="color" id="cfg-pbar-custom-color" value="#1DB954">
+            </div>
+          </div>
+
+          <div class="form-row" id="row-pbar-gradient-end" style="display: none;">
+            <div class="form-col">
+              <span class="form-label">Segunda Cor do Gradiente (Final)</span>
+              <span class="form-sublabel">Transição suave da cor principal para esta</span>
+            </div>
+            <div class="color-picker-wrapper">
+              <input type="color" id="cfg-pbar-custom-gradient-end" value="#00d2ff">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Exibir Barra de Progresso</span>
+              <span class="form-sublabel">Ativar ou ocultar a barra inteira</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-pbar-show-progress" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <span class="form-label">Exibir Marcadores de Tempo (0:00 / 3:45)</span>
+              <span class="form-sublabel">Ativar ou ocultar os contadores numéricos</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-pbar-show-time" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+        </div>
+
       </div>
 
       <!-- ABA 3: TIPOGRAFIA -->

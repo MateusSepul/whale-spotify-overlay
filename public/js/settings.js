@@ -69,6 +69,220 @@ document.addEventListener('DOMContentLoaded', () => {
     if (box) box.style.display = show ? 'flex' : 'none';
   }
 
+  // ─── Personalização da Barra de Tempo (Animações & Marcadores) ───────────
+
+  const pbarAnimCards = document.querySelectorAll('.pbar-anim-card');
+  pbarAnimCards.forEach(card => {
+    card.addEventListener('click', () => {
+      pbarAnimCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const animStyle = card.getAttribute('data-anim');
+      
+      const previewCard = document.getElementById('spotify-card');
+      if (previewCard) {
+        const animStyles = [
+          'pbar-anim-none', 'pbar-anim-shimmer', 'pbar-anim-pulse', 'pbar-anim-wave',
+          'pbar-anim-stripes', 'pbar-anim-rainbow', 'pbar-anim-laser', 'pbar-anim-audio_bounce',
+          'pbar-anim-glow_head'
+        ];
+        animStyles.forEach(cls => previewCard.classList.remove(cls));
+        if (animStyle !== 'none') previewCard.classList.add(`pbar-anim-${animStyle}`);
+      }
+
+      updateConfigProperty({ progressAnimStyle: animStyle });
+    });
+  });
+
+  const pbarHeadCards = document.querySelectorAll('.pbar-head-card');
+  pbarHeadCards.forEach(card => {
+    card.addEventListener('click', () => {
+      pbarHeadCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const headEffect = card.getAttribute('data-head');
+
+      const previewCard = document.getElementById('spotify-card');
+      if (previewCard) {
+        const headEffects = [
+          'pbar-head-none', 'pbar-head-glow_orb', 'pbar-head-pill', 'pbar-head-diamond',
+          'pbar-head-sparkle', 'pbar-head-pulse_ring'
+        ];
+        headEffects.forEach(cls => previewCard.classList.remove(cls));
+        previewCard.classList.add(`pbar-head-${headEffect}`);
+      }
+
+      updateConfigProperty({ progressHeadEffect: headEffect });
+    });
+  });
+
+  const pbarPresets = {
+    cyberpunk: {
+      progressAnimStyle: 'laser',
+      progressHeadEffect: 'glow_orb',
+      progressBarHeight: 6,
+      progressBarRadius: 0,
+      progressGlow: 100,
+      progressAnimSpeed: 1.2,
+      progressTrackStyle: 'glow_track',
+      progressTimeStyle: 'glow'
+    },
+    liquid: {
+      progressAnimStyle: 'wave',
+      progressHeadEffect: 'pill',
+      progressBarHeight: 7,
+      progressBarRadius: 8,
+      progressGlow: 70,
+      progressAnimSpeed: 2.2,
+      progressTrackStyle: 'glass',
+      progressTimeStyle: 'glow'
+    },
+    shimmer: {
+      progressAnimStyle: 'shimmer',
+      progressHeadEffect: 'diamond',
+      progressBarHeight: 5,
+      progressBarRadius: 6,
+      progressGlow: 65,
+      progressAnimSpeed: 2.0,
+      progressTrackStyle: 'glass',
+      progressTimeStyle: 'glow'
+    },
+    rainbow: {
+      progressAnimStyle: 'rainbow',
+      progressHeadEffect: 'pulse_ring',
+      progressBarHeight: 6,
+      progressBarRadius: 6,
+      progressGlow: 85,
+      progressAnimSpeed: 3.2,
+      progressTrackStyle: 'dark',
+      progressTimeStyle: 'badge'
+    },
+    stripes: {
+      progressAnimStyle: 'stripes',
+      progressHeadEffect: 'pill',
+      progressBarHeight: 6,
+      progressBarRadius: 4,
+      progressGlow: 50,
+      progressAnimSpeed: 1.4,
+      progressTrackStyle: 'inset',
+      progressTimeStyle: 'clean'
+    },
+    beat: {
+      progressAnimStyle: 'audio_bounce',
+      progressHeadEffect: 'sparkle',
+      progressBarHeight: 6,
+      progressBarRadius: 6,
+      progressGlow: 80,
+      progressAnimSpeed: 1.8,
+      progressTrackStyle: 'glow_track',
+      progressTimeStyle: 'glow'
+    },
+    minimal: {
+      progressAnimStyle: 'none',
+      progressHeadEffect: 'none',
+      progressBarHeight: 3,
+      progressBarRadius: 3,
+      progressGlow: 25,
+      progressAnimSpeed: 2.0,
+      progressTrackStyle: 'glass',
+      progressTimeStyle: 'clean'
+    }
+  };
+
+  const presetBtns = document.querySelectorAll('.preset-pill-btn');
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const presetKey = btn.getAttribute('data-preset');
+      const preset = pbarPresets[presetKey];
+      if (!preset) return;
+
+      applyPresetValues(preset);
+      updateConfigProperty(preset);
+    });
+  });
+
+  function applyPresetValues(preset) {
+    if (preset.progressAnimStyle) {
+      pbarAnimCards.forEach(c => {
+        if (c.getAttribute('data-anim') === preset.progressAnimStyle) c.classList.add('active');
+        else c.classList.remove('active');
+      });
+    }
+    if (preset.progressHeadEffect) {
+      pbarHeadCards.forEach(c => {
+        if (c.getAttribute('data-head') === preset.progressHeadEffect) c.classList.add('active');
+        else c.classList.remove('active');
+      });
+    }
+    if (preset.progressBarHeight !== undefined) setVal('cfg-pbar-height', preset.progressBarHeight, 'val-pbar-height', 'px');
+    if (preset.progressBarRadius !== undefined) setVal('cfg-pbar-radius', preset.progressBarRadius, 'val-pbar-radius', 'px');
+    if (preset.progressGlow !== undefined) setVal('cfg-pbar-glow', preset.progressGlow, 'val-pbar-glow', '%');
+    if (preset.progressAnimSpeed !== undefined) setVal('cfg-pbar-speed', preset.progressAnimSpeed, 'val-pbar-speed', 's');
+    if (preset.progressTrackStyle) setVal('cfg-pbar-track-style', preset.progressTrackStyle);
+    if (preset.progressTimeStyle) setVal('cfg-pbar-time-style', preset.progressTimeStyle);
+
+    const root = document.documentElement;
+    const previewCard = document.getElementById('spotify-card');
+
+    if (preset.progressBarHeight !== undefined) root.style.setProperty('--pbar-height', `${preset.progressBarHeight}px`);
+    if (preset.progressBarRadius !== undefined) root.style.setProperty('--pbar-radius', `${preset.progressBarRadius}px`);
+    if (preset.progressGlow !== undefined) root.style.setProperty('--pbar-glow', (preset.progressGlow / 100).toString());
+    if (preset.progressAnimSpeed !== undefined) root.style.setProperty('--pbar-speed', `${preset.progressAnimSpeed}s`);
+
+    if (previewCard) {
+      if (preset.progressAnimStyle) {
+        const animStyles = [
+          'pbar-anim-none', 'pbar-anim-shimmer', 'pbar-anim-pulse', 'pbar-anim-wave',
+          'pbar-anim-stripes', 'pbar-anim-rainbow', 'pbar-anim-laser', 'pbar-anim-audio_bounce',
+          'pbar-anim-glow_head'
+        ];
+        animStyles.forEach(cls => previewCard.classList.remove(cls));
+        if (preset.progressAnimStyle !== 'none') previewCard.classList.add(`pbar-anim-${preset.progressAnimStyle}`);
+      }
+
+      if (preset.progressHeadEffect) {
+        const headEffects = [
+          'pbar-head-none', 'pbar-head-glow_orb', 'pbar-head-pill', 'pbar-head-diamond',
+          'pbar-head-sparkle', 'pbar-head-pulse_ring'
+        ];
+        headEffects.forEach(cls => previewCard.classList.remove(cls));
+        previewCard.classList.add(`pbar-head-${preset.progressHeadEffect}`);
+      }
+
+      if (preset.progressTrackStyle) {
+        const trackStyles = ['pbar-track-glass', 'pbar-track-dark', 'pbar-track-glow_track', 'pbar-track-dotted', 'pbar-track-inset'];
+        trackStyles.forEach(cls => previewCard.classList.remove(cls));
+        previewCard.classList.add(`pbar-track-${preset.progressTrackStyle}`);
+      }
+
+      if (preset.progressTimeStyle) {
+        const timeStyles = ['pbar-time-glow', 'pbar-time-badge', 'pbar-time-clean'];
+        timeStyles.forEach(cls => previewCard.classList.remove(cls));
+        previewCard.classList.add(`pbar-time-${preset.progressTimeStyle}`);
+      }
+    }
+  }
+
+  function togglePbarColorRows(type) {
+    const rowCustom = document.getElementById('row-pbar-custom-color');
+    const rowGradEnd = document.getElementById('row-pbar-gradient-end');
+    if (rowCustom) rowCustom.style.display = (type === 'custom' || type === 'gradient') ? 'flex' : 'none';
+    if (rowGradEnd) rowGradEnd.style.display = (type === 'gradient') ? 'flex' : 'none';
+
+    const root = document.documentElement;
+    if (type === 'custom') {
+      const color = document.getElementById('cfg-pbar-custom-color')?.value || '#1DB954';
+      root.style.setProperty('--pbar-fill-color', color);
+      root.style.setProperty('--pbar-glow-color', color);
+    } else if (type === 'gradient') {
+      const start = document.getElementById('cfg-pbar-custom-color')?.value || '#1DB954';
+      const end = document.getElementById('cfg-pbar-custom-gradient-end')?.value || '#00d2ff';
+      root.style.setProperty('--pbar-fill-color', `linear-gradient(90deg, ${start}, ${end})`);
+      root.style.setProperty('--pbar-glow-color', end);
+    } else {
+      root.style.setProperty('--pbar-fill-color', 'var(--accent-color)');
+      root.style.setProperty('--pbar-glow-color', 'var(--accent-color)');
+    }
+  }
+
   // ─── Upload de Vídeo / GIF ───────────────────────────────────────────────
 
   const uploadZone    = document.getElementById('vis-upload-zone');
@@ -347,6 +561,32 @@ document.addEventListener('DOMContentLoaded', () => {
     setVal('cfg-bg-vis-speed', config.bgVisSpeed || 'normal');
     setVal('cfg-bg-vis-scope', config.bgVisScope || 'card');
 
+    // Barra de Tempo & Animações
+    const currentPbarAnim = config.progressAnimStyle || 'shimmer';
+    pbarAnimCards.forEach(c => {
+      if (c.getAttribute('data-anim') === currentPbarAnim) c.classList.add('active');
+      else c.classList.remove('active');
+    });
+
+    const currentPbarHead = config.progressHeadEffect || 'glow_orb';
+    pbarHeadCards.forEach(c => {
+      if (c.getAttribute('data-head') === currentPbarHead) c.classList.add('active');
+      else c.classList.remove('active');
+    });
+
+    setVal('cfg-pbar-height', config.progressBarHeight !== undefined ? config.progressBarHeight : 5, 'val-pbar-height', 'px');
+    setVal('cfg-pbar-radius', config.progressBarRadius !== undefined ? config.progressBarRadius : 6, 'val-pbar-radius', 'px');
+    setVal('cfg-pbar-glow', config.progressGlow !== undefined ? config.progressGlow : 65, 'val-pbar-glow', '%');
+    setVal('cfg-pbar-speed', config.progressAnimSpeed || 2.0, 'val-pbar-speed', 's');
+    setVal('cfg-pbar-track-style', config.progressTrackStyle || 'glass');
+    setVal('cfg-pbar-time-style', config.progressTimeStyle || 'glow');
+    setVal('cfg-pbar-fill-color-type', config.progressFillColorType || 'accent');
+    togglePbarColorRows(config.progressFillColorType || 'accent');
+    setVal('cfg-pbar-custom-color', config.progressCustomColor || '#1DB954');
+    setVal('cfg-pbar-custom-gradient-end', config.progressCustomGradientEnd || '#00d2ff');
+    setCheck('cfg-pbar-show-progress', config.showProgress !== false);
+    setCheck('cfg-pbar-show-time', config.showTime !== false);
+
     setTimeout(autoFitPreview, 60);
   }
 
@@ -400,7 +640,20 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'cfg-bg-vis-opacity', key: 'bgVisOpacity', type: 'val', num: true, labelId: 'val-bg-vis-opacity', suffix: '%' },
     { id: 'cfg-bg-vis-speed', key: 'bgVisSpeed', type: 'val' },
     { id: 'cfg-bg-vis-scope', key: 'bgVisScope', type: 'val' },
-    { id: 'cfg-bg-vis-custom-file', key: 'bgVisCustomFile', type: 'val' }
+    { id: 'cfg-bg-vis-custom-file', key: 'bgVisCustomFile', type: 'val' },
+
+    // Bindings da Barra de Tempo
+    { id: 'cfg-pbar-height', key: 'progressBarHeight', type: 'val', num: true, labelId: 'val-pbar-height', suffix: 'px' },
+    { id: 'cfg-pbar-radius', key: 'progressBarRadius', type: 'val', num: true, labelId: 'val-pbar-radius', suffix: 'px' },
+    { id: 'cfg-pbar-glow', key: 'progressGlow', type: 'val', num: true, labelId: 'val-pbar-glow', suffix: '%' },
+    { id: 'cfg-pbar-speed', key: 'progressAnimSpeed', type: 'val', num: true, labelId: 'val-pbar-speed', suffix: 's' },
+    { id: 'cfg-pbar-track-style', key: 'progressTrackStyle', type: 'val' },
+    { id: 'cfg-pbar-time-style', key: 'progressTimeStyle', type: 'val' },
+    { id: 'cfg-pbar-fill-color-type', key: 'progressFillColorType', type: 'val' },
+    { id: 'cfg-pbar-custom-color', key: 'progressCustomColor', type: 'val' },
+    { id: 'cfg-pbar-custom-gradient-end', key: 'progressCustomGradientEnd', type: 'val' },
+    { id: 'cfg-pbar-show-progress', key: 'showProgress', type: 'check' },
+    { id: 'cfg-pbar-show-time', key: 'showTime', type: 'check' }
   ];
 
   function updateObsDimensions(scale = 100) {
@@ -434,6 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Aplicar imediatamente no preview local (sem esperar pelo WebSocket)
       const root = document.documentElement;
+      const previewCard = document.getElementById('spotify-card');
       const immediateMap = {
         fontFamily:          () => root.style.setProperty('--font-family', `'${value}', sans-serif`),
         titleSize:           () => root.style.setProperty('--title-size', `${value}px`),
@@ -446,6 +700,52 @@ document.addEventListener('DOMContentLoaded', () => {
         glowIntensity:       () => root.style.setProperty('--glow-intensity', (value / 100).toString()),
         blurAmount:          () => root.style.setProperty('--blur-amount', `${value}px`),
         borderRadius:        () => root.style.setProperty('--border-radius', `${value}px`),
+
+        // Barra de Tempo
+        progressBarHeight:   () => root.style.setProperty('--pbar-height', `${value}px`),
+        progressBarRadius:   () => root.style.setProperty('--pbar-radius', `${value}px`),
+        progressGlow:        () => root.style.setProperty('--pbar-glow', (value / 100).toString()),
+        progressAnimSpeed:   () => root.style.setProperty('--pbar-speed', `${value}s`),
+        progressTrackStyle:  () => {
+          if (previewCard) {
+            ['pbar-track-glass', 'pbar-track-dark', 'pbar-track-glow_track', 'pbar-track-dotted', 'pbar-track-inset']
+              .forEach(cls => previewCard.classList.remove(cls));
+            previewCard.classList.add(`pbar-track-${value}`);
+          }
+        },
+        progressTimeStyle:   () => {
+          if (previewCard) {
+            ['pbar-time-glow', 'pbar-time-badge', 'pbar-time-clean']
+              .forEach(cls => previewCard.classList.remove(cls));
+            previewCard.classList.add(`pbar-time-${value}`);
+          }
+        },
+        progressFillColorType: () => togglePbarColorRows(value),
+        progressCustomColor: () => {
+          root.style.setProperty('--pbar-fill-color', value);
+          root.style.setProperty('--pbar-glow-color', value);
+        },
+        progressCustomGradientEnd: () => {
+          const start = document.getElementById('cfg-pbar-custom-color')?.value || 'var(--accent-color)';
+          root.style.setProperty('--pbar-fill-color', `linear-gradient(90deg, ${start}, ${value})`);
+          root.style.setProperty('--pbar-glow-color', value);
+        },
+        showProgress: () => {
+          const ps = document.getElementById('progress-section');
+          if (ps) ps.style.display = value ? 'flex' : 'none';
+          const m1 = document.getElementById('cfg-show-progress');
+          const m2 = document.getElementById('cfg-pbar-show-progress');
+          if (m1) m1.checked = !!value;
+          if (m2) m2.checked = !!value;
+        },
+        showTime: () => {
+          const tr = document.getElementById('time-row');
+          if (tr) tr.style.display = value ? 'flex' : 'none';
+          const t1 = document.getElementById('cfg-show-time');
+          const t2 = document.getElementById('cfg-pbar-show-time');
+          if (t1) t1.checked = !!value;
+          if (t2) t2.checked = !!value;
+        }
       };
       if (immediateMap[binding.key]) immediateMap[binding.key]();
 

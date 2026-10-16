@@ -260,32 +260,331 @@ body.vis-scope-full .card-vis-container {
   fill: currentColor;
 }
 
-/* Barra de Progresso */
+/* ===================================================
+   BARRA DE PROGRESSO E TEMPO: SISTEMA DE ANIMAÇÕES
+=================================================== */
 .progress-section {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   margin-top: 4px;
+  position: relative;
 }
 
 .progress-bar-bg {
   width: 100%;
-  height: 4px;
+  height: var(--pbar-height, 5px);
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-  overflow: hidden;
+  border-radius: var(--pbar-radius, 6px);
   position: relative;
+  overflow: visible;
+  transition: height 0.25s ease, border-radius 0.25s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Estilos de Fundo / Trilho (Track Styles) */
+.pbar-track-glass .progress-bar-bg {
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.pbar-track-dark .progress-bar-bg {
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.pbar-track-glow_track .progress-bar-bg {
+  background: rgba(12, 14, 18, 0.85);
+  border: 1px solid rgba(var(--accent-rgb, 29, 185, 84), 0.45);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb, 29, 185, 84), calc(var(--pbar-glow, 0.65) * 0.35)),
+              inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.pbar-track-dotted .progress-bar-bg {
+  background-color: rgba(15, 17, 23, 0.7);
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.25) 1.5px, transparent 1.5px);
+  background-size: 10px 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pbar-track-inset .progress-bar-bg {
+  background: #090a0d;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Preenchimento da Barra */
 .progress-bar-fill {
   height: 100%;
   width: 0%;
-  background: var(--accent-color);
-  border-radius: 4px;
-  box-shadow: 0 0 10px var(--accent-color);
-  transition: width 0.3s linear;
+  background: var(--pbar-fill-color, var(--accent-color));
+  border-radius: var(--pbar-radius, 6px);
+  box-shadow: 0 0 calc(var(--pbar-glow, 0.65) * 16px) var(--pbar-glow-color, var(--accent-color));
+  transition: width 0.3s linear, background 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: visible;
 }
 
+/* Camada Interna de Efeitos Animados */
+.progress-bar-fx {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---------------------------------------------------
+   ESTILOS DE ANIMAÇÃO DO PREENCHIMENTO (pbar-anim-*)
+--------------------------------------------------- */
+
+/* 1. Shimmer (Brilho Deslizante / Sweep Sheen) */
+.pbar-anim-shimmer .progress-bar-fx::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0.1) 75%,
+    transparent 100%
+  );
+  transform: translateX(-150%);
+  animation: pbarShimmerAnim var(--pbar-speed, 2s) infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pbarShimmerAnim {
+  0% { transform: translateX(-160%); }
+  100% { transform: translateX(260%); }
+}
+
+/* 2. Pulse (Pulso Neon / Respiração Luminosa) */
+.pbar-anim-pulse .progress-bar-fill {
+  animation: pbarPulseAnim var(--pbar-speed, 1.8s) infinite ease-in-out;
+}
+
+@keyframes pbarPulseAnim {
+  0%, 100% {
+    filter: brightness(1) saturate(1);
+    box-shadow: 0 0 calc(var(--pbar-glow, 0.65) * 8px) var(--pbar-glow-color, var(--accent-color));
+  }
+  50% {
+    filter: brightness(1.35) saturate(1.25);
+    box-shadow: 0 0 calc(var(--pbar-glow, 0.65) * 22px) var(--pbar-glow-color, var(--accent-color)),
+                0 0 calc(var(--pbar-glow, 0.65) * 36px) rgba(var(--accent-rgb, 29, 185, 84), 0.5);
+  }
+}
+
+/* 3. Wave (Onda Líquida Fluida) */
+.pbar-anim-wave .progress-bar-fx {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  background-size: 200% 100%;
+  animation: pbarWaveAnim var(--pbar-speed, 2.2s) linear infinite;
+}
+
+@keyframes pbarWaveAnim {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 4. Stripes (Listras Diagonais Animadas) */
+.pbar-anim-stripes .progress-bar-fx {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.25) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.25) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 20px 20px;
+  animation: pbarStripesAnim var(--pbar-speed, 1.4s) linear infinite;
+}
+
+@keyframes pbarStripesAnim {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+
+/* 5. Rainbow (Fluxo RGB Chroma) */
+.pbar-anim-rainbow .progress-bar-fill {
+  background: linear-gradient(90deg, #ff0055, #ff5500, #ffcc00, #00ff66, #00d2ff, #7b2cbf, #ff0055) !important;
+  background-size: 400% 100% !important;
+  animation: pbarRainbowAnim var(--pbar-speed, 3.5s) linear infinite !important;
+}
+
+@keyframes pbarRainbowAnim {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 400% 50%; }
+}
+
+/* 6. Laser (Feixe Laser Rápido) */
+.pbar-anim-laser .progress-bar-fx::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  background: linear-gradient(90deg, transparent, #ffffff, var(--pbar-glow-color, var(--accent-color)), transparent);
+  filter: drop-shadow(0 0 10px #ffffff);
+  animation: pbarLaserAnim calc(var(--pbar-speed, 2s) * 0.8) ease-in-out infinite;
+}
+
+@keyframes pbarLaserAnim {
+  0% { left: -70px; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { left: 115%; opacity: 0; }
+}
+
+/* 7. Audio Bounce (Pulso de Batimento Rítmico) */
+.pbar-anim-audio_bounce .progress-bar-fill {
+  animation: pbarAudioBounce calc(var(--pbar-speed, 1.8s) * 0.6) infinite ease-in-out;
+  transform-origin: center bottom;
+}
+
+@keyframes pbarAudioBounce {
+  0%, 100% { transform: scaleY(1); }
+  25% { transform: scaleY(1.45); }
+  50% { transform: scaleY(0.95); }
+  75% { transform: scaleY(1.3); }
+}
+
+/* 8. Glow Head Trail */
+.pbar-anim-glow_head .progress-bar-fx {
+  background: linear-gradient(90deg, transparent 35%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.8) 100%);
+}
+
+/* ---------------------------------------------------
+   MARCADOR / CABEÇA NA PONTA (pbar-head-*)
+--------------------------------------------------- */
+.progress-bar-head {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(50%, -50%);
+  z-index: 5;
+  pointer-events: none;
+  display: none;
+}
+
+/* 1. Orbe Neon Brilhante (Glow Orb) */
+.pbar-head-glow_orb .progress-bar-head {
+  display: block;
+  width: calc(var(--pbar-height, 5px) + 8px);
+  height: calc(var(--pbar-height, 5px) + 8px);
+  min-width: 12px;
+  min-height: 12px;
+  max-width: 22px;
+  max-height: 22px;
+  background: #FFFFFF;
+  border: 2px solid var(--pbar-glow-color, var(--accent-color));
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--pbar-glow-color, var(--accent-color)),
+              0 0 22px var(--pbar-glow-color, var(--accent-color));
+  animation: headOrbPulse 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes headOrbPulse {
+  0% {
+    transform: translate(50%, -50%) scale(0.92);
+    box-shadow: 0 0 8px var(--pbar-glow-color, var(--accent-color));
+  }
+  100% {
+    transform: translate(50%, -50%) scale(1.22);
+    box-shadow: 0 0 16px var(--pbar-glow-color, var(--accent-color)),
+                0 0 26px var(--pbar-glow-color, var(--accent-color));
+  }
+}
+
+/* 2. Marcador Cápsula (Pill Marker) */
+.pbar-head-pill .progress-bar-head {
+  display: block;
+  width: 4px;
+  height: calc(var(--pbar-height, 5px) + 10px);
+  min-height: 13px;
+  background: #FFFFFF;
+  border-radius: 4px;
+  box-shadow: 0 0 10px var(--pbar-glow-color, var(--accent-color)), 0 0 18px #FFFFFF;
+}
+
+/* 3. Diamante / Losango (Diamond) */
+.pbar-head-diamond .progress-bar-head {
+  display: block;
+  width: calc(var(--pbar-height, 5px) + 6px);
+  height: calc(var(--pbar-height, 5px) + 6px);
+  min-width: 11px;
+  min-height: 11px;
+  max-width: 18px;
+  max-height: 18px;
+  background: #FFFFFF;
+  border: 2px solid var(--pbar-glow-color, var(--accent-color));
+  border-radius: 2px;
+  box-shadow: 0 0 12px var(--pbar-glow-color, var(--accent-color));
+  animation: headDiamondSpin 4s linear infinite;
+}
+
+@keyframes headDiamondSpin {
+  0% { transform: translate(50%, -50%) rotate(45deg); }
+  100% { transform: translate(50%, -50%) rotate(405deg); }
+}
+
+/* 4. Estrela Cintilante (Sparkle) */
+.pbar-head-sparkle .progress-bar-head {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, #ffffff 30%, var(--pbar-glow-color, var(--accent-color)) 75%);
+  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+  box-shadow: 0 0 14px #ffffff;
+  animation: headSparkleTwinkle 1.4s infinite alternate ease-in-out;
+}
+
+@keyframes headSparkleTwinkle {
+  0% { transform: translate(50%, -50%) scale(0.8) rotate(0deg); opacity: 0.75; }
+  100% { transform: translate(50%, -50%) scale(1.3) rotate(90deg); opacity: 1; }
+}
+
+/* 5. Anel com Onda Expansiva (Pulse Ring) */
+.pbar-head-pulse_ring .progress-bar-head {
+  display: block;
+  width: 10px;
+  height: 10px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--pbar-glow-color, var(--accent-color));
+}
+
+.pbar-head-pulse_ring .progress-bar-head::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--pbar-glow-color, var(--accent-color));
+  border-radius: 50%;
+  animation: headRingExpand 1.5s infinite cubic-bezier(0, 0.2, 0.8, 1);
+}
+
+@keyframes headRingExpand {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.pbar-head-none .progress-bar-head {
+  display: none !important;
+}
+
+/* ---------------------------------------------------
+   ESTILOS DOS TEXTOS DE TEMPO (pbar-time-*)
+--------------------------------------------------- */
 .time-row {
   display: flex;
   justify-content: space-between;
@@ -293,6 +592,50 @@ body.vis-scope-full .card-vis-container {
   font-family: 'JetBrains Mono', monospace;
   color: var(--secondary-text-color);
   font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.25s ease;
+}
+
+/* Glow nos Marcadores de Tempo */
+.pbar-time-glow .time-row span {
+  text-shadow: 0 0 8px rgba(var(--accent-rgb, 29, 185, 84), 0.6);
+  color: #FFFFFF;
+}
+
+.is-playing.pbar-time-glow .time-row #current-time {
+  animation: timeGlowPulse 2.5s infinite alternate ease-in-out;
+}
+
+@keyframes timeGlowPulse {
+  0% { text-shadow: 0 0 4px rgba(var(--accent-rgb, 29, 185, 84), 0.4); }
+  100% { text-shadow: 0 0 12px rgba(var(--accent-rgb, 29, 185, 84), 0.9), 0 0 20px rgba(var(--accent-rgb, 29, 185, 84), 0.5); }
+}
+
+/* Badges Translúcidas no Tempo */
+.pbar-time-badge .time-row span {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 10.5px;
+  color: #FFFFFF;
+}
+
+/* Limpo */
+.pbar-time-clean .time-row span {
+  background: transparent;
+  border: none;
+  text-shadow: none;
+}
+
+/* Pausado: Congela suavemente as animações */
+.is-paused .progress-bar-fx::after,
+.is-paused .progress-bar-fx,
+.is-paused .progress-bar-fill,
+.is-paused .progress-bar-head,
+.is-paused .progress-bar-head::after,
+.is-paused .time-row #current-time {
+  animation-play-state: paused !important;
 }
 
 /* ===================================================

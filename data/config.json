@@ -1,5 +1,5 @@
 {
-  "theme": "lcd",
+  "theme": "glass",
   "useDynamicColor": true,
   "accentColor": "#ffffff",
   "bgColor": "#ffffff",
@@ -36,5 +36,14 @@
   "spotifyClientId": "",
   "spotifyClientSecret": "",
   "spotifyRefreshToken": "",
-  "enableCanvas": true
+  "enableCanvas": true,
+  "progressAnimStyle": "glow_head",
+  "progressHeadEffect": "none",
+  "progressAnimSpeed": 1.2,
+  "progressBarHeight": 6,
+  "progressBarRadius": 0,
+  "progressGlow": 100,
+  "progressTrackStyle": "glass",
+  "progressTimeStyle": "glow",
+  "progressFillColorType": "accent"
 }

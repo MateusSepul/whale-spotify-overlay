@@ -125,8 +125,95 @@
       window.WMPVisualizer.updateConfig(config);
     }
 
+    // Aplicar Customização e Animações da Barra de Tempo
+    applyProgressBarConfig(config);
+
     // Marquee
     checkMarquee();
+  }
+
+  function ensureProgressBarElements() {
+    if (!progressBarFill) return;
+    if (!document.getElementById('progress-bar-fx')) {
+      const fx = document.createElement('div');
+      fx.id = 'progress-bar-fx';
+      fx.className = 'progress-bar-fx';
+      progressBarFill.appendChild(fx);
+    }
+    if (!document.getElementById('progress-bar-head')) {
+      const head = document.createElement('div');
+      head.id = 'progress-bar-head';
+      head.className = 'progress-bar-head';
+      progressBarFill.appendChild(head);
+    }
+  }
+
+  function applyProgressBarConfig(config) {
+    ensureProgressBarElements();
+    if (!card) return;
+
+    const root = document.documentElement;
+
+    // 1. Estilo de Animação
+    const animStyles = [
+      'pbar-anim-none', 'pbar-anim-shimmer', 'pbar-anim-pulse', 'pbar-anim-wave',
+      'pbar-anim-stripes', 'pbar-anim-rainbow', 'pbar-anim-laser', 'pbar-anim-audio_bounce',
+      'pbar-anim-glow_head'
+    ];
+    animStyles.forEach(cls => card.classList.remove(cls));
+    const animStyle = config.progressAnimStyle || 'shimmer';
+    if (animStyle !== 'none') {
+      card.classList.add(`pbar-anim-${animStyle}`);
+    }
+
+    // 2. Efeito do Marcador da Ponta (Head Effect)
+    const headEffects = [
+      'pbar-head-none', 'pbar-head-glow_orb', 'pbar-head-pill', 'pbar-head-diamond',
+      'pbar-head-sparkle', 'pbar-head-pulse_ring'
+    ];
+    headEffects.forEach(cls => card.classList.remove(cls));
+    const headEffect = config.progressHeadEffect || 'glow_orb';
+    card.classList.add(`pbar-head-${headEffect}`);
+
+    // 3. Estilo do Trilho / Fundo
+    const trackStyles = [
+      'pbar-track-glass', 'pbar-track-dark', 'pbar-track-glow_track',
+      'pbar-track-dotted', 'pbar-track-inset'
+    ];
+    trackStyles.forEach(cls => card.classList.remove(cls));
+    const trackStyle = config.progressTrackStyle || 'glass';
+    card.classList.add(`pbar-track-${trackStyle}`);
+
+    // 4. Estilo do Tempo
+    const timeStyles = ['pbar-time-glow', 'pbar-time-badge', 'pbar-time-clean'];
+    timeStyles.forEach(cls => card.classList.remove(cls));
+    const timeStyle = config.progressTimeStyle || 'glow';
+    card.classList.add(`pbar-time-${timeStyle}`);
+
+    // 5. Variáveis CSS
+    const speed = config.progressAnimSpeed !== undefined ? config.progressAnimSpeed : 2.0;
+    const height = config.progressBarHeight !== undefined ? config.progressBarHeight : 5;
+    const radius = config.progressBarRadius !== undefined ? config.progressBarRadius : 6;
+    const glow = config.progressGlow !== undefined ? config.progressGlow : 65;
+
+    root.style.setProperty('--pbar-speed', `${speed}s`);
+    root.style.setProperty('--pbar-height', `${height}px`);
+    root.style.setProperty('--pbar-radius', `${radius}px`);
+    root.style.setProperty('--pbar-glow', (glow / 100).toString());
+
+    // 6. Cores do Preenchimento
+    if (config.progressFillColorType === 'custom' && config.progressCustomColor) {
+      root.style.setProperty('--pbar-fill-color', config.progressCustomColor);
+      root.style.setProperty('--pbar-glow-color', config.progressCustomColor);
+    } else if (config.progressFillColorType === 'gradient' && config.progressCustomGradientEnd) {
+      const start = config.progressCustomColor || 'var(--accent-color)';
+      const end = config.progressCustomGradientEnd;
+      root.style.setProperty('--pbar-fill-color', `linear-gradient(90deg, ${start}, ${end})`);
+      root.style.setProperty('--pbar-glow-color', end);
+    } else {
+      root.style.setProperty('--pbar-fill-color', 'var(--accent-color)');
+      root.style.setProperty('--pbar-glow-color', 'var(--accent-color)');
+    }
   }
 
   function applyAccentColor(hex) {
