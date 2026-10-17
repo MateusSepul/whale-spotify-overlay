@@ -1,6 +1,6 @@
 const { exec } = require('child_process');
 const path = require('path');
-const configStore = require('./config-store');
+const userStore = require('./user-store');
 const spotifyApi = require('./spotify-api');
 
 const PS_SCRIPT = path.join(__dirname, '..', 'scripts', 'get-media.ps1');
@@ -8,8 +8,9 @@ const PS_SCRIPT = path.join(__dirname, '..', 'scripts', 'get-media.ps1');
 class MediaDetector {
   constructor() {
     this.coverCache = new Map();
-    this.lastMedia = null;
-    this.onUpdateCallback = null;
+    this.userMediaMap = new Map(); // userId -> lastMedia
+    this.userListeners = new Map(); // userId -> Set<callback>
+    this.activeUsers = new Map(); // userId -> lastActivityTimestamp
     this.timer = null;
     this.isQuerying = false;
 
@@ -47,10 +48,53 @@ class MediaDetector {
         source: "demo"
       }
     ];
+
+    // Por padrão o usuário 'default' está sempre ativo
+    this.touchUser('default');
+  }
+
+  // Compatibilidade com código legado
+  get lastMedia() {
+    return this.getUserMedia('default');
   }
 
   onUpdate(callback) {
-    this.onUpdateCallback = callback;
+    this.onUserUpdate('default', callback);
+  }
+
+  touchUser(userId) {
+    const id = String(userId || 'default').trim();
+    this.activeUsers.set(id, Date.now());
+  }
+
+  getUserMedia(userId) {
+    const id = String(userId || 'default').trim();
+    return this.userMediaMap.get(id) || { isPlaying: false, title: '', artist: '' };
+  }
+
+  onUserUpdate(userId, callback) {
+    const id = String(userId || 'default').trim();
+    if (!this.userListeners.has(id)) {
+      this.userListeners.set(id, new Set());
+    }
+    this.userListeners.get(id).add(callback);
+    this.touchUser(id);
+
+    return () => {
+      const set = this.userListeners.get(id);
+      if (set) set.delete(callback);
+    };
+  }
+
+  broadcastToUser(userId, mediaData) {
+    const id = String(userId || 'default').trim();
+    this.userMediaMap.set(id, mediaData);
+    const listeners = this.userListeners.get(id);
+    if (listeners) {
+      listeners.forEach(cb => {
+        try { cb(mediaData); } catch (e) {}
+      });
+    }
   }
 
   start() {
@@ -66,9 +110,11 @@ class MediaDetector {
     }
   }
 
-  nextDemoTrack() {
+  nextDemoTrack(userId = 'default') {
     this.demoTrackIndex = (this.demoTrackIndex + 1) % this.demoTracks.length;
-    this.broadcast(this.demoTracks[this.demoTrackIndex]);
+    const track = this.demoTracks[this.demoTrackIndex];
+    this.broadcastToUser(userId, track);
+    return track;
   }
 
   async tick() {
@@ -76,31 +122,26 @@ class MediaDetector {
     this.isQuerying = true;
 
     try {
-      const config = configStore.get();
-      let mediaData = null;
-
-      if (config.detectionMode === 'demo') {
-        const demo = { ...this.demoTracks[this.demoTrackIndex] };
-        mediaData = demo;
-      } else if (config.detectionMode === 'api') {
-        mediaData = await spotifyApi.getCurrentlyPlaying();
-        // Fallback automático para local caso não haja conexão com a API
-        if (!mediaData) {
-          mediaData = await this.queryLocalMedia();
+      const now = Date.now();
+      // Remove usuários inativos há mais de 2 minutos (exceto 'default' se houver conexão)
+      for (const [uid, lastSeen] of this.activeUsers.entries()) {
+        if (uid !== 'default' && (now - lastSeen > 120000)) {
+          const listeners = this.userListeners.get(uid);
+          if (!listeners || listeners.size === 0) {
+            this.activeUsers.delete(uid);
+          }
         }
-      } else {
-        // Padrão: Modo Local Windows SMTC
-        mediaData = await this.queryLocalMedia();
       }
 
-      if (mediaData) {
-        this.lastMedia = mediaData;
-        this.broadcast(mediaData);
-      } else if (this.lastMedia && this.lastMedia.isPlaying) {
-        // Se nada respondeu ou fechou, marca como pausado
-        this.lastMedia = { ...this.lastMedia, isPlaying: false };
-        this.broadcast(this.lastMedia);
+      // Se nenhum usuário estiver ativo, garante que pelo menos 'default' exista
+      if (this.activeUsers.size === 0) {
+        this.touchUser('default');
       }
+
+      const activeIds = Array.from(this.activeUsers.keys());
+
+      // Executa a detecção para cada usuário ativo em paralelo
+      await Promise.all(activeIds.map(uid => this.checkUser(uid)));
     } catch (err) {
       console.error('Erro no ciclo de detecção:', err.message);
     } finally {
@@ -108,9 +149,41 @@ class MediaDetector {
     }
   }
 
-  broadcast(data) {
-    if (this.onUpdateCallback) {
-      this.onUpdateCallback(data);
+  async checkUser(userId) {
+    try {
+      const user = userStore.getUser(userId);
+      const mode = user.config.detectionMode || (user.spotify ? 'api' : 'local');
+      let mediaData = null;
+
+      if (mode === 'demo') {
+        mediaData = { ...this.demoTracks[this.demoTrackIndex] };
+      } else if (mode === 'api' || user.spotify) {
+        mediaData = await spotifyApi.getCurrentlyPlayingForUser(user);
+        // Fallback para local somente se for Windows e o usuário for o default
+        if ((!mediaData || !mediaData.title) && process.platform === 'win32' && userId === 'default') {
+          const localMedia = await this.queryLocalMedia();
+          if (localMedia) mediaData = localMedia;
+        }
+      } else {
+        // Modo local Windows SMTC
+        if (process.platform === 'win32') {
+          mediaData = await this.queryLocalMedia();
+        } else {
+          // Em servidores Linux na nuvem, sem Spotify conectado, mostra demo
+          mediaData = { ...this.demoTracks[this.demoTrackIndex] };
+        }
+      }
+
+      if (mediaData) {
+        this.broadcastToUser(userId, mediaData);
+      } else {
+        const last = this.userMediaMap.get(userId);
+        if (last && last.isPlaying) {
+          this.broadcastToUser(userId, { ...last, isPlaying: false });
+        }
+      }
+    } catch (e) {
+      // Falha silenciosa por usuário
     }
   }
 
@@ -138,7 +211,11 @@ class MediaDetector {
 
           let coverUrl = this.coverCache.get(cacheKey);
           if (!coverUrl) {
-            coverUrl = await this.fetchCoverArt(raw.Artist, raw.Title, raw.Album);
+            // 1. Tenta obter capa HD (600x600) via iTunes ou Deezer
+            const hdCover = await this.fetchCoverArt(raw.Artist, raw.Title, raw.Album);
+            
+            // 2. Fallback garantido: Capa nativa extraída do próprio Spotify via Windows SMTC
+            coverUrl = hdCover || raw.CoverUrl || null;
             if (coverUrl) {
               this.coverCache.set(cacheKey, coverUrl);
             }
@@ -148,7 +225,7 @@ class MediaDetector {
             title: raw.Title,
             artist: raw.Artist || 'Desconhecido',
             album: raw.Album || '',
-            coverUrl: coverUrl || 'https://raw.githubusercontent.com/feathericons/feather/master/icons/music.svg',
+            coverUrl: coverUrl || raw.CoverUrl || 'https://raw.githubusercontent.com/feathericons/feather/master/icons/music.svg',
             isPlaying: isPlaying,
             position: raw.Position || 0,
             duration: raw.Duration || 0,
@@ -161,37 +238,47 @@ class MediaDetector {
     });
   }
 
-  async fetchCoverArt(artist, title, album) {
-    // 1. Tentar iTunes Search API (gratuita, sem chave, rápida e capa 600x600)
-    try {
-      const q = encodeURIComponent(`${artist} ${title}`);
-      const res = await fetch(`https://itunes.apple.com/search?term=${q}&media=music&entity=song&limit=1`, {
-        signal: AbortSignal.timeout(3000)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.results && data.results.length > 0 && data.results[0].artworkUrl100) {
-          return data.results[0].artworkUrl100.replace('100x100bb', '600x600bb');
-        }
-      }
-    } catch (e) {
-      // Ignora e tenta Deezer
-    }
+  cleanQuery(text) {
+    if (!text) return '';
+    return text
+      .replace(/\s*[\(\[](feat|ft|with|remaster|remastered|live|deluxe|version|mono|stereo|anniversary|radio edit|original mix)[\.\s\w\d]*[\)\]]/gi, '')
+      .replace(/ - [^:]*(remaster|remastered|live|deluxe|version|mono|stereo).*/gi, '')
+      .trim();
+  }
 
-    // 2. Fallback: Deezer Search API
-    try {
-      const q = encodeURIComponent(`${artist} ${title}`);
-      const res = await fetch(`https://api.deezer.com/search?q=${q}&limit=1`, {
-        signal: AbortSignal.timeout(3000)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.data && data.data.length > 0 && data.data[0].album) {
-          return data.data[0].album.cover_xl || data.data[0].album.cover_big || data.data[0].album.cover_medium;
+  async fetchCoverArt(artist, title, album) {
+    const cleanT = this.cleanQuery(title);
+    const searchTerms = [
+      `${artist} ${cleanT}`,
+      album ? `${artist} ${album}` : null
+    ].filter(Boolean);
+
+    for (const term of searchTerms) {
+      try {
+        const q = encodeURIComponent(term);
+        const res = await fetch(`https://itunes.apple.com/search?term=${q}&media=music&entity=song&limit=1`, {
+          signal: AbortSignal.timeout(1200)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.results && data.results.length > 0 && data.results[0].artworkUrl100) {
+            return data.results[0].artworkUrl100.replace('100x100bb', '600x600bb');
+          }
         }
-      }
-    } catch (e) {
-      // Falha silenciosa
+      } catch (e) {}
+
+      try {
+        const q = encodeURIComponent(term);
+        const res = await fetch(`https://api.deezer.com/search?q=${q}&limit=1`, {
+          signal: AbortSignal.timeout(1200)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.data && data.data.length > 0 && data.data[0].album) {
+            return data.data[0].album.cover_xl || data.data[0].album.cover_big || data.data[0].album.cover_medium;
+          }
+        }
+      } catch (e) {}
     }
 
     return null;

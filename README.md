@@ -37,5 +37,34 @@ Overlay moderno e altamente customizável para o **OBS Studio**, capaz de detect
 
 ---
 
+## 🌐 Publicação na Web & Modo Multi-Usuário (Deploy)
 
-V1 - Apenas local ainda nao foi feito o deploy, atualmente apenas rodando pelo localhost, futuramente será feito o deploy.
+O sistema agora possui arquitetura **Multi-Tenant** com autenticação oficial do Spotify em 1 clique. Qualquer streamer pode acessar o seu site, conectar sua conta do Spotify e obter seu próprio link exclusivo para o OBS Studio.
+
+### 1. Como Configurar o Spotify Developer (Apenas para o Dono do Site)
+1. Acesse o [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) e faça login.
+2. Clique em **Create app**:
+   - **App name**: `Whale OBS Overlay` (ou o nome do seu projeto)
+   - **App description**: `Overlay moderno do Spotify para OBS Studio`
+   - **Redirect URIs**:
+     - Para testes locais: `http://localhost:3000/auth/spotify/callback`
+     - Para seu domínio público: `https://seu-dominio.com/auth/spotify/callback` (ex: no Railway ou Render)
+   - Selecione a API **Web API** e salve.
+3. No painel do seu app no Spotify, vá em **Settings** e copie o **Client ID** e o **Client Secret**.
+4. Crie ou edite o arquivo `.env` na raiz do projeto:
+   ```env
+   PORT=3000
+   SPOTIFY_CLIENT_ID=seu_client_id_aqui
+   SPOTIFY_CLIENT_SECRET=seu_client_secret_aqui
+   BASE_URL=https://seu-dominio.com
+   ```
+
+### 2. O que o Streamer / Usuário faz?
+- O usuário apenas entra no site e clica no botão **"Conectar Spotify"**.
+- Ele autoriza com 1 clique e recebe o link exclusivo do overlay (ex: `https://seu-site.com/overlay?id=usr_abc123`).
+- **100% das capas** são entregues em alta resolução direto dos servidores do Spotify (`i.scdn.co`), funcionando com qualquer música, artista indie, podcast ou plataforma.
+
+### 3. Opções Gratuitas de Deploy Recomendadas:
+- **[Railway](https://railway.app/)** ou **[Render](https://render.com/)**: Conecte seu repositório GitHub, adicione as variáveis de ambiente `SPOTIFY_CLIENT_ID` e `SPOTIFY_CLIENT_SECRET` e o deploy é automático com HTTPS gratuito!
+- **VPS (Ubuntu / Debian)**: Clone o repositório, rode `npm install`, preencha o `.env` e execute com `pm2 start server.js`.
+

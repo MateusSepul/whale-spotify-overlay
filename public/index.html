@@ -24,8 +24,21 @@
     </div>
 
     <div class="header-actions">
-      <a href="/overlay" target="_blank" class="btn btn-secondary">
-        <span>Abrir Overlay no Navegador</span>
+      <!-- Badge de Usuário Conectado -->
+      <div id="spotify-user-badge" class="spotify-user-badge" style="display: none;">
+        <img id="spotify-user-avatar" class="spotify-avatar" src="" alt="Avatar">
+        <span id="spotify-user-name">Usuário</span>
+        <button id="btn-disconnect-spotify" class="btn-disconnect-mini" title="Desconectar Spotify">✕</button>
+      </div>
+
+      <!-- Botão de Conectar com Spotify -->
+      <a id="btn-header-spotify-login" href="/auth/spotify/login" class="btn btn-spotify" style="display: none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.498 17.306c-.215.352-.676.463-1.028.248-2.816-1.722-6.36-2.112-10.536-1.157-.402.093-.799-.161-.892-.562-.093-.402.161-.8.562-.892 4.571-1.045 8.49-.604 11.646 1.335.352.215.463.676.248 1.028zm1.468-3.264c-.27.44-.847.579-1.287.31-3.224-1.982-8.14-2.556-11.954-1.398-.498.151-1.027-.132-1.178-.63-.151-.498.132-1.028.63-1.179 4.364-1.325 9.792-.686 13.479 1.61.44.27.58.847.31 1.287zm.126-3.41c-3.865-2.295-10.244-2.507-13.931-1.388-.593.18-1.223-.156-1.402-.75-.18-.593.156-1.223.75-1.402 4.24-1.287 11.288-1.043 15.736 1.597.533.316.708 1.011.392 1.544-.316.533-1.011.716-1.545.399z"/></svg>
+        <span>Conectar Spotify</span>
+      </a>
+
+      <a id="btn-open-overlay" href="/overlay" target="_blank" class="btn btn-secondary">
+        <span>Abrir Overlay</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
       </a>
       <button id="btn-copy-url" class="btn btn-primary">
@@ -805,42 +818,58 @@
 
       <!-- ABA 5: CONEXÃO & OBS -->
       <div class="tab-content" id="tab-connection">
+
+        <!-- Card de Conexão Oficial Spotify (1 Clique) -->
+        <div class="spotify-connect-card" id="spotify-connect-card">
+          <div class="spotify-card-left">
+            <div class="spotify-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.498 17.306c-.215.352-.676.463-1.028.248-2.816-1.722-6.36-2.112-10.536-1.157-.402.093-.799-.161-.892-.562-.093-.402.161-.8.562-.892 4.571-1.045 8.49-.604 11.646 1.335.352.215.463.676.248 1.028zm1.468-3.264c-.27.44-.847.579-1.287.31-3.224-1.982-8.14-2.556-11.954-1.398-.498.151-1.027-.132-1.178-.63-.151-.498.132-1.028.63-1.179 4.364-1.325 9.792-.686 13.479 1.61.44.27.58.847.31 1.287zm.126-3.41c-3.865-2.295-10.244-2.507-13.931-1.388-.593.18-1.223-.156-1.402-.75-.18-.593.156-1.223.75-1.402 4.24-1.287 11.288-1.043 15.736 1.597.533.316.708 1.011.392 1.544-.316.533-1.011.716-1.545.399z"/></svg>
+            </div>
+            <div>
+              <div class="spotify-card-title">Conectar com Spotify (Recomendado)</div>
+              <div class="spotify-card-desc">Conecte sua conta em 1 clique para funcionar em qualquer dispositivo (PC, Mac, Celular, Console) com <strong>100% das capas originais</strong> em alta definição direto dos servidores do Spotify.</div>
+            </div>
+          </div>
+          <div>
+            <a id="btn-main-spotify-login" href="/auth/spotify/login" class="btn btn-spotify">
+              <span>Conectar Spotify</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card de Usuário Conectado -->
+        <div class="spotify-connect-card is-connected" id="spotify-connected-card" style="display: none;">
+          <div class="spotify-connected-user">
+            <img id="spotify-avatar-display" class="spotify-connected-avatar" src="" alt="Avatar">
+            <div>
+              <div class="spotify-connected-name" id="spotify-name-display">Usuário Conectado</div>
+              <div class="spotify-connected-status">Conectado ao Spotify · Capas 100% HD ativas</div>
+            </div>
+          </div>
+          <button id="btn-disconnect-spotify-tab" class="btn btn-disconnect">Desconectar Conta</button>
+        </div>
+
+        <!-- Aviso para o dono do site se o .env não tiver credenciais -->
+        <div class="cloud-notice" id="spotify-not-configured-banner" style="display: none;">
+          <span>⚙️</span>
+          <div>
+            <strong>Aviso para o Administrador:</strong> O <code>SPOTIFY_CLIENT_ID</code> e <code>SPOTIFY_CLIENT_SECRET</code> ainda não foram preenchidos no arquivo <code>.env</code> do servidor. Para liberar o login com 1 clique para os streamers, adicione suas chaves do Spotify Developer no <code>.env</code>.
+          </div>
+        </div>
+
         <div class="config-group">
-          <div class="group-title">Método de Detecção do Spotify</div>
-          <div class="group-desc">Escolha como o sistema captura a música tocando no seu computador.</div>
+          <div class="group-title">Método de Detecção Alternativo</div>
+          <div class="group-desc">Alterne entre a API oficial do Spotify, o leitor nativo local do Windows ou o modo de teste.</div>
 
           <div class="form-row">
             <div class="form-col">
               <span class="form-label">Modo Atual</span>
             </div>
             <select id="cfg-detection-mode">
-              <option value="local">🟢 Detecção Local Windows (Nativo, sem login, automático)</option>
-              <option value="api">☁️ Spotify Web API Oficial (Requer App no Spotify)</option>
+              <option value="api">☁️ Spotify Web API Oficial (Recomendado / 100% Capas)</option>
+              <option value="local">🟢 Detecção Local Windows (Nativo, sem login, apenas no seu PC)</option>
               <option value="demo">🧪 Modo Demonstração (Músicas simuladas para teste)</option>
             </select>
-          </div>
-        </div>
-
-        <!-- Opções da Spotify API (caso o usuário queira) -->
-        <div class="config-group" id="group-spotify-api" style="display: none;">
-          <div class="group-title">Configurar Spotify Web API Oficial</div>
-          <div class="group-desc">
-            Crie um app gratuito em <a href="https://developer.spotify.com/dashboard" target="_blank" style="color: var(--primary);">developer.spotify.com/dashboard</a> e cadastre o Redirect URI como: <code style="color: #38EF7D;">http://localhost:3000/callback</code>
-          </div>
-
-          <div class="form-col">
-            <label class="form-label">Spotify Client ID</label>
-            <input type="text" id="cfg-spotify-client-id" placeholder="Cole seu Client ID aqui">
-          </div>
-
-          <div class="form-col">
-            <label class="form-label">Spotify Client Secret</label>
-            <input type="password" id="cfg-spotify-client-secret" placeholder="Cole seu Client Secret aqui">
-          </div>
-
-          <div style="display: flex; gap: 10px;">
-            <button id="btn-save-credentials" class="btn btn-secondary">Salvar Credenciais</button>
-            <a href="/api/spotify/login" class="btn btn-primary">Fazer Login no Spotify</a>
           </div>
         </div>
 
@@ -858,8 +887,8 @@
           <div class="step-item">
             <div class="step-num">2</div>
             <div class="step-content">
-              <div class="step-title">Cole o Link do Overlay</div>
-              <div class="step-text">No campo <strong>URL</strong>, cole: <code style="color: #38EF7D;">http://localhost:3000/overlay</code></div>
+              <div class="step-title">Cole o seu Link Exclusivo do Overlay</div>
+              <div class="step-text">No campo <strong>URL</strong>, cole o seu link pessoal: <code id="obs-step-url" style="color: #38EF7D; word-break: break-all;">http://localhost:3000/overlay</code></div>
             </div>
           </div>
 

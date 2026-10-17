@@ -1,4 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Resolução de Usuário Multi-Tenant
+  function getActiveUserId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromUrl = urlParams.get('user') || urlParams.get('id') || urlParams.get('u');
+    if (fromUrl) {
+      localStorage.setItem('whale_user_id', fromUrl);
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+      return fromUrl;
+    }
+    const saved = localStorage.getItem('whale_user_id');
+    if (saved) return saved;
+
+    const newId = 'usr_' + Math.random().toString(36).substring(2, 10);
+    localStorage.setItem('whale_user_id', newId);
+    return newId;
+  }
+
+  const currentUserId = getActiveUserId();
+
   // Helper: converte hex em rgb e atualiza --accent-rgb no preview
   function applyAccentRgb(hex) {
     const clean = hex.replace('#', '');
@@ -454,9 +474,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const copyBtnSecondary = document.getElementById('btn-copy-url-secondary');
   const copyBtnText = document.getElementById('copy-btn-text');
   const obsUrlDisplay = document.getElementById('obs-url-display');
+  const obsStepUrl = document.getElementById('obs-step-url');
+  const btnOpenOverlay = document.getElementById('btn-open-overlay');
 
-  const overlayUrl = `${window.location.origin}/overlay`;
+  const overlayUrl = `${window.location.origin}/overlay?id=${encodeURIComponent(currentUserId)}`;
   if (obsUrlDisplay) obsUrlDisplay.textContent = overlayUrl;
+  if (obsStepUrl) obsStepUrl.textContent = overlayUrl;
+  if (btnOpenOverlay) btnOpenOverlay.href = overlayUrl;
 
   function copyObsUrl() {
     navigator.clipboard.writeText(overlayUrl).then(() => {
@@ -477,12 +501,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const nextDemoBtn = document.getElementById('btn-next-demo');
   if (nextDemoBtn) {
     nextDemoBtn.addEventListener('click', async () => {
-      await fetch('/api/demo/next', { method: 'POST' });
+      await fetch(`/api/demo/next?userId=${encodeURIComponent(currentUserId)}`, { method: 'POST' });
     });
   }
 
   // Carregar Configurações Iniciais
-  fetch('/api/config')
+  fetch(`/api/config?userId=${encodeURIComponent(currentUserId)}`)
     .then(res => res.json())
     .then(config => populateInputs(config))
     .catch(err => console.error('Erro ao obter config:', err));
@@ -773,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateConfigProperty(patch) {
     clearTimeout(saveDebounceTimer);
     saveDebounceTimer = setTimeout(() => {
-      fetch('/api/config', {
+      fetch(`/api/config?userId=${encodeURIComponent(currentUserId)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(patch)
@@ -786,7 +810,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusText = document.getElementById('playback-status-text');
 
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const statusWs = new WebSocket(`${protocol}//${window.location.host}`);
+  const statusWs = new WebSocket(`${protocol}//${window.location.host}?userId=${encodeURIComponent(currentUserId)}`);
   statusWs.onmessage = (event) => {
     try {
       const msg = JSON.parse(event.data);
@@ -802,6 +826,92 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (e) {}
   };
+
+  // Gerenciamento da Conexão Oficial Spotify
+  async function checkSpotifyStatus() {
+    try {
+      const res = await fetch(`/api/me?userId=${encodeURIComponent(currentUserId)}`);
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const btnHeaderLogin = document.getElementById('btn-header-spotify-login');
+      const userBadge = document.getElementById('spotify-user-badge');
+      const userName = document.getElementById('spotify-user-name');
+      const userAvatar = document.getElementById('spotify-user-avatar');
+
+      const connectCard = document.getElementById('spotify-connect-card');
+      const connectedCard = document.getElementById('spotify-connected-card');
+      const nameDisplay = document.getElementById('spotify-name-display');
+      const avatarDisplay = document.getElementById('spotify-avatar-display');
+      const adminNotice = document.getElementById('spotify-not-configured-banner');
+
+      // Se o servidor ainda não tiver .env configurado com Spotify
+      if (adminNotice) {
+        adminNotice.style.display = data.isSpotifyConfigured ? 'none' : 'flex';
+      }
+
+      // Atualizar links de login para incluir o userId
+      const loginUrl = `/auth/spotify/login?userId=${encodeURIComponent(currentUserId)}`;
+      if (btnHeaderLogin) btnHeaderLogin.href = loginUrl;
+      const btnMainLogin = document.getElementById('btn-main-spotify-login');
+      if (btnMainLogin) btnMainLogin.href = loginUrl;
+
+      if (data.spotify) {
+        // Usuário está conectado
+        if (btnHeaderLogin) btnHeaderLogin.style.display = 'none';
+        if (userBadge) {
+          userBadge.style.display = 'inline-flex';
+          userName.textContent = data.spotify.displayName || 'Spotify';
+          if (data.spotify.avatar) {
+            userAvatar.src = data.spotify.avatar;
+            userAvatar.style.display = 'block';
+          } else {
+            userAvatar.style.display = 'none';
+          }
+        }
+
+        if (connectCard) connectCard.style.display = 'none';
+        if (connectedCard) {
+          connectedCard.style.display = 'flex';
+          if (nameDisplay) nameDisplay.textContent = data.spotify.displayName || 'Spotify Conectado';
+          if (avatarDisplay) {
+            if (data.spotify.avatar) {
+              avatarDisplay.src = data.spotify.avatar;
+              avatarDisplay.style.display = 'block';
+            } else {
+              avatarDisplay.style.display = 'none';
+            }
+          }
+        }
+      } else {
+        // Usuário não conectado
+        if (btnHeaderLogin) btnHeaderLogin.style.display = 'inline-flex';
+        if (userBadge) userBadge.style.display = 'none';
+
+        if (connectCard) connectCard.style.display = 'flex';
+        if (connectedCard) connectedCard.style.display = 'none';
+      }
+    } catch (e) {
+      console.error('Erro ao verificar status do usuário:', e);
+    }
+  }
+
+  // Handlers para Desconectar Spotify
+  async function disconnectSpotify() {
+    if (!confirm('Deseja realmente desconectar sua conta do Spotify deste overlay?')) return;
+    try {
+      await fetch(`/auth/spotify/disconnect?userId=${encodeURIComponent(currentUserId)}`, { method: 'POST' });
+      checkSpotifyStatus();
+    } catch (e) {}
+  }
+
+  const btnDisconnectHeader = document.getElementById('btn-disconnect-spotify');
+  if (btnDisconnectHeader) btnDisconnectHeader.addEventListener('click', disconnectSpotify);
+
+  const btnDisconnectTab = document.getElementById('btn-disconnect-spotify-tab');
+  if (btnDisconnectTab) btnDisconnectTab.addEventListener('click', disconnectSpotify);
+
+  checkSpotifyStatus();
 
   // Função Inteligente de Auto-Fit para a Pré-visualização
   function autoFitPreview() {

@@ -28,12 +28,30 @@
     window.WMPVisualizer.init(visContainer, visCanvas, visVideo);
   }
 
+  function getUserId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || params.get('u') || params.get('userId') || params.get('user') || 'default';
+  }
+
+  const currentUserId = getUserId();
+
+  // Carregar dados iniciais imediatamente via REST para evitar delay visual
+  fetch(`/api/config?userId=${encodeURIComponent(currentUserId)}`)
+    .then(r => r.json())
+    .then(cfg => applyConfig(cfg))
+    .catch(() => {});
+
+  fetch(`/api/media?userId=${encodeURIComponent(currentUserId)}`)
+    .then(r => r.json())
+    .then(med => { if (med && med.title) updateMedia(med); })
+    .catch(() => {});
+
   function connectWS() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    ws = new WebSocket(`${protocol}//${window.location.host}`);
+    ws = new WebSocket(`${protocol}//${window.location.host}?userId=${encodeURIComponent(currentUserId)}`);
 
     ws.onopen = () => {
-      console.log('Conectado ao servidor do Overlay!');
+      console.log(`Conectado ao servidor do Overlay para o usuário [${currentUserId}]!`);
     };
 
     ws.onmessage = (event) => {

@@ -1,107 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-
-const CONFIG_FILE = path.join(__dirname, '..', 'data', 'config.json');
-
-const DEFAULT_CONFIG = {
-  theme: 'glass', // 'glass', 'vinyl', 'cyberpunk', 'minimal', 'pill', 'cassette', 'card'
-  
-  // Cores e Estilo
-  useDynamicColor: true,
-  accentColor: '#1DB954',
-  bgColor: '#111217',
-  bgOpacity: 85, // 0-100
-  textColor: '#FFFFFF',
-  secondaryTextColor: '#A0A5B5',
-  glowIntensity: 60, // 0-100
-  blurAmount: 16, // px
-  borderRadius: 18, // px
-  scale: 100, // %
-
-  // Tipografia
-  fontFamily: 'Outfit', // 'Outfit', 'Inter', 'Poppins', 'Montserrat', 'JetBrains Mono', 'Space Grotesk'
-  titleSize: 17, // px
-  artistSize: 13, // px
-  fontWeight: '600',
-
-  // Visibilidade de Elementos
-  showCover: true,
-  coverShape: 'rounded', // 'square', 'rounded', 'circle'
-  showProgress: true,
-  showTime: true,
-  showEqualizer: true,
-  showPlatformBadge: true,
-  textMarquee: true,
-
-  // Comportamento
-  hideWhenPaused: false,
-  hideDelay: 5, // segundos antes de sumir se pausado
-  animationStyle: 'slide', // 'slide', 'fade', 'zoom'
-  vinylSpeed: 'normal', // 'slow', 'normal', 'fast'
-  vinylFullCover: true, // Capa ocupando o círculo inteiro no disco de vinil
-  enableTransitions: true, // Ativar animações temáticas de transição ao trocar de música
-
-  // Personalização e Animações da Barra de Tempo
-  progressAnimStyle: 'shimmer', // 'none', 'shimmer', 'pulse', 'wave', 'stripes', 'rainbow', 'laser', 'audio_bounce'
-  progressHeadEffect: 'glow_orb', // 'none', 'glow_orb', 'pill', 'diamond', 'sparkle', 'pulse_ring'
-  progressAnimSpeed: 2.0, // segundos de ciclo (0.5s a 5.0s)
-  progressBarHeight: 5, // px (2 a 16)
-  progressBarRadius: 6, // px (0 a 16)
-  progressGlow: 65, // % (0 a 100)
-  progressTrackStyle: 'glass', // 'glass', 'dark', 'glow_track', 'dotted'
-  progressTimeStyle: 'glow', // 'glow', 'badge', 'clean'
-  progressFillColorType: 'accent', // 'accent', 'gradient', 'custom', 'rainbow'
-  progressCustomColor: '#1DB954',
-  progressCustomGradientEnd: '#00d2ff',
-
-  // Visualizações de Fundo (Windows Media Player Style)
-  bgVisualization: 'none', // 'none', 'blazing_colors', 'color_cubes', 'trilogy', 'psychedelia', 'bars_waves', 'hyperspace', 'custom_video'
-  bgVisOpacity: 70, // 0-100
-  bgVisSpeed: 'normal', // 'slow', 'normal', 'fast'
-  bgVisScope: 'card', // 'card', 'full'
-  bgVisCustomFile: '',
-
-  // Conexão
-  detectionMode: 'local', // 'local' (Windows SMTC), 'api' (Spotify Web API), 'demo'
-  spotifyClientId: '',
-  spotifyClientSecret: '',
-  spotifyRefreshToken: ''
-};
+const userStore = require('./user-store');
 
 class ConfigStore {
-  constructor() {
-    this.config = this.load();
-  }
-
-  load() {
-    try {
-      if (fs.existsSync(CONFIG_FILE)) {
-        const raw = fs.readFileSync(CONFIG_FILE, 'utf8');
-        const parsed = JSON.parse(raw);
-        return { ...DEFAULT_CONFIG, ...parsed };
-      }
-    } catch (err) {
-      console.error('Erro ao ler config.json, usando padrão:', err.message);
-    }
-    this.save(DEFAULT_CONFIG);
-    return { ...DEFAULT_CONFIG };
+  get() {
+    return userStore.getUserConfig('default');
   }
 
   save(newConfig) {
-    try {
-      const merged = { ...this.config, ...newConfig };
-      fs.writeFileSync(CONFIG_FILE, JSON.stringify(merged, null, 2), 'utf8');
-      this.config = merged;
-      return this.config;
-    } catch (err) {
-      console.error('Erro ao salvar config.json:', err.message);
-      return this.config;
-    }
-  }
-
-  get() {
-    return this.config;
+    return userStore.saveUserConfig('default', newConfig);
   }
 }
 
 module.exports = new ConfigStore();
+
