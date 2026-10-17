@@ -93,10 +93,15 @@ app.post('/api/config', (req, res) => {
   res.json({ success: true, config: updated });
 });
 
-app.get('/api/media', (req, res) => {
+app.get('/api/media', async (req, res) => {
   const userId = resolveUserId(req);
   detector.touchUser(userId);
-  res.json(detector.getUserMedia(userId) || { isPlaying: false, title: '', artist: '' });
+  let media = detector.getUserMedia(userId);
+  if (!media || !media.title) {
+    await detector.checkUser(userId);
+    media = detector.getUserMedia(userId);
+  }
+  res.json(media || { isPlaying: false, title: '', artist: '' });
 });
 
 app.post('/api/demo/next', (req, res) => {
@@ -207,7 +212,7 @@ function broadcastToUser(userId, msg) {
   });
 }
 
-wss.on('connection', (ws, req) => {
+wss.on('connection', async (ws, req) => {
   let userId = 'default';
   try {
     const parsed = new URL(req.url, 'http://localhost');
@@ -225,7 +230,14 @@ wss.on('connection', (ws, req) => {
 
   // Enviar estado inicial imediatamente na conexão
   ws.send(JSON.stringify({ type: 'config', data: userStore.getUserConfig(userId) }));
-  const initialMedia = detector.getUserMedia(userId);
+
+  // Enviar mídia imediatamente
+  let initialMedia = detector.getUserMedia(userId);
+  if (!initialMedia || !initialMedia.title) {
+    await detector.checkUser(userId);
+    initialMedia = detector.getUserMedia(userId);
+  }
+
   if (initialMedia && initialMedia.title) {
     ws.send(JSON.stringify({ type: 'media', data: initialMedia }));
   }
@@ -253,32 +265,10 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-// Conectar atualizações do detector ao WebSocket específico de cada usuário
-detector.listAllUsers = () => userStore.listAllUsers();
-userStore.listAllUsers().forEach(u => {
-  detector.onUserUpdate(u.id, (mediaData) => {
-    broadcastToUser(u.id, { type: 'media', data: mediaData });
-  });
+// Transmissão direta em tempo real: qualquer atualização no detector é enviada imediatamente para o WebSocket do usuário
+detector.onBroadcast((userId, mediaData) => {
+  broadcastToUser(userId, { type: 'media', data: mediaData });
 });
-
-// Ouvinte dinâmico para novos usuários ou updates
-detector.onUpdateCallback = (mediaData) => {
-  // compatibilidade
-};
-
-// Monitoramento central
-const activeListeners = new Set();
-setInterval(() => {
-  const allUsers = userStore.listAllUsers();
-  allUsers.forEach(u => {
-    if (!activeListeners.has(u.id)) {
-      activeListeners.add(u.id);
-      detector.onUserUpdate(u.id, (mediaData) => {
-        broadcastToUser(u.id, { type: 'media', data: mediaData });
-      });
-    }
-  });
-}, 5000);
 
 // Iniciar detector e servidor
 detector.start();

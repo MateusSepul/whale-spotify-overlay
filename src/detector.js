@@ -86,14 +86,23 @@ class MediaDetector {
     };
   }
 
+  onBroadcast(callback) {
+    this.onBroadcastCallback = callback;
+  }
+
   broadcastToUser(userId, mediaData) {
     const id = String(userId || 'default').trim();
     this.userMediaMap.set(id, mediaData);
+
     const listeners = this.userListeners.get(id);
     if (listeners) {
       listeners.forEach(cb => {
         try { cb(mediaData); } catch (e) {}
       });
+    }
+
+    if (this.onBroadcastCallback) {
+      try { this.onBroadcastCallback(id, mediaData); } catch (e) {}
     }
   }
 
@@ -123,7 +132,6 @@ class MediaDetector {
 
     try {
       const now = Date.now();
-      // Remove usuários inativos há mais de 2 minutos (exceto 'default' se houver conexão)
       for (const [uid, lastSeen] of this.activeUsers.entries()) {
         if (uid !== 'default' && (now - lastSeen > 120000)) {
           const listeners = this.userListeners.get(uid);
@@ -133,14 +141,11 @@ class MediaDetector {
         }
       }
 
-      // Se nenhum usuário estiver ativo, garante que pelo menos 'default' exista
       if (this.activeUsers.size === 0) {
         this.touchUser('default');
       }
 
       const activeIds = Array.from(this.activeUsers.keys());
-
-      // Executa a detecção para cada usuário ativo em paralelo
       await Promise.all(activeIds.map(uid => this.checkUser(uid)));
     } catch (err) {
       console.error('Erro no ciclo de detecção:', err.message);
@@ -152,29 +157,29 @@ class MediaDetector {
   async checkUser(userId) {
     try {
       const user = userStore.getUser(userId);
-      const mode = user.config.detectionMode || (user.spotify ? 'api' : 'local');
       let mediaData = null;
 
-      if (mode === 'demo') {
-        mediaData = { ...this.demoTracks[this.demoTrackIndex] };
-      } else if (mode === 'api' || user.spotify) {
+      // 1. Se tem Spotify oficial conectado via OAuth
+      if (user && user.spotify && user.spotify.refreshToken) {
         mediaData = await spotifyApi.getCurrentlyPlayingForUser(user);
-        // Fallback para local somente se for Windows e o usuário for o default
-        if ((!mediaData || !mediaData.title) && process.platform === 'win32' && userId === 'default') {
-          const localMedia = await this.queryLocalMedia();
-          if (localMedia) mediaData = localMedia;
-        }
-      } else {
-        // Modo local Windows SMTC
+      }
+
+      // 2. Modo Demo explícito
+      if (!mediaData && user && user.config && user.config.detectionMode === 'demo') {
+        mediaData = { ...this.demoTracks[this.demoTrackIndex] };
+      }
+
+      // 3. Detecção local nativa do Windows (fallback universal se estiver rodando no Windows)
+      if (!mediaData || !mediaData.title) {
         if (process.platform === 'win32') {
           mediaData = await this.queryLocalMedia();
         } else {
-          // Em servidores Linux na nuvem, sem Spotify conectado, mostra demo
+          // Servidor Linux na nuvem sem Spotify conectado
           mediaData = { ...this.demoTracks[this.demoTrackIndex] };
         }
       }
 
-      if (mediaData) {
+      if (mediaData && mediaData.title) {
         this.broadcastToUser(userId, mediaData);
       } else {
         const last = this.userMediaMap.get(userId);
@@ -183,7 +188,7 @@ class MediaDetector {
         }
       }
     } catch (e) {
-      // Falha silenciosa por usuário
+      console.error(`Erro ao checar usuário ${userId}:`, e.message);
     }
   }
 
